@@ -1,0 +1,46 @@
+{
+  "name": "guignol",
+  "version": "0.1.0",
+  "description": "Local-first RSS reader with markdown vault and AI summaries",
+  "main": "./out/main/index.js",
+  "author": "Mauro Murru",
+  "private": true,
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "start": "electron-vite preview",
+    "dist": "electron-vite build && electron-builder",
+    "dist:mac": "electron-vite build && electron-builder --mac",
+    "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json"
+  },
+  "dependencies": {
+    "@fontsource/space-grotesk": "^5.2.10",
+    "electron-store": "^8.2.0",
+    "gray-matter": "^4.0.3",
+    "lucide-react": "^1.8.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-markdown": "^9.0.1",
+    "react-router-dom": "^6.26.2",
+    "remark-gfm": "^4.0.0",
+    "rss-parser": "^3.13.0",
+    "slugify": "^1.6.6",
+    "turndown": "^7.2.0",
+    "xml2js": "^0.6.2"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.2.2",
+    "@types/node": "^20.16.5",
+    "@types/react": "^18.3.5",
+    "@types/react-dom": "^18.3.0",
+    "@types/turndown": "^5.0.5",
+    "@types/xml2js": "^0.4.14",
+    "@vitejs/plugin-react": "^4.3.1",
+    "electron": "^32.1.2",
+    "electron-builder": "^25.0.5",
+    "electron-vite": "^2.3.0",
+    "tailwindcss": "^4.2.2",
+    "typescript": "^5.6.2",
+    "vite": "^5.4.6"
+  }
+}

@@ -1,0 +1,16 @@
+appId: com.brainrepo.guignol
+productName: Guignol
+directories:
+  buildResources: assets
+files:
+  - out/**/*
+  - package.json
+asar: true
+mac:
+  category: public.app-category.news
+  target:
+    - dmg
+win:
+  target: nsis
+linux:
+  target: AppImage
