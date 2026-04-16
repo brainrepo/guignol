@@ -419,16 +419,29 @@ code {
 .download-row {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 14px;
   flex-wrap: wrap;
-  margin: 28px 0 14px;
+  margin: 28px 0 18px;
 }
-.download-meta {
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-caps);
-  color: var(--color-fg-muted);
-  margin: 0;
+.download-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  font-size: 13px;
+  color: var(--color-fg-dim);
+  margin: 0 0 18px;
+}
+.download-meta-row strong {
+  color: var(--color-fg);
+  font-weight: 600;
+}
+.download-meta-row .sep {
+  color: var(--color-fg-faint);
+}
+@media (max-width: 560px) {
+  .download-meta-row .sep { display: none; }
+  .download-meta-row { gap: 4px 14px; }
 }
 .tiny {
   font-size: 13px;
