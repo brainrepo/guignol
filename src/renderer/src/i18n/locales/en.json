@@ -36,8 +36,6 @@
     "loading": "Loading…",
     "notFound": "Article not found",
     "original": "Original",
-    "save": "Save",
-    "saved": "Saved",
     "highlights": "Highlights",
     "summaryAi": "AI Summary",
     "regenerate": "Regenerate",
@@ -52,7 +50,16 @@
     "scrollToHighlight": "Scroll to this passage",
     "drawerEmpty": "Select text in the article and click Highlight to add one.",
     "highlightCountLabel_one": "{{count}} highlight",
-    "highlightCountLabel_other": "{{count}} highlights"
+    "highlightCountLabel_other": "{{count}} highlights",
+    "readerMode": "Reader mode",
+    "readerLoading": "Fetching…",
+    "readerAutoFetching": "Fetching full article…",
+    "readerRefresh": "Refresh reader",
+    "readerToggleFeed": "Feed",
+    "readerToggleReader": "Reader",
+    "readerShortWarning": "The extracted article looks very short ({{words}} words). It may be incomplete — try the original.",
+    "readerErrorPrefix": "Reader fetch failed:",
+    "readerRetry": "Retry"
   },
   "settings": {
     "title": "Settings",

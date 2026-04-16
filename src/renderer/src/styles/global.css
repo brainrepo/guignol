@@ -7,7 +7,7 @@
   --color-bg-hover: #e6eaf0;
   --color-fg: #0f172a;
   --color-fg-dim: #475569;
-  --color-fg-muted: #8795a8;
+  --color-fg-muted: #5a6778;
   --color-fg-faint: #cfd6df;
   --color-accent: #2d5a94;
   --color-accent-dim: #3a6fb5;
@@ -33,7 +33,7 @@
   --color-bg-hover: #21262d;
   --color-fg: #e6edf3;
   --color-fg-dim: #9da8b5;
-  --color-fg-muted: #6b7685;
+  --color-fg-muted: #8b95a3;
   --color-fg-faint: #30363d;
   --color-accent: #5b9cee;
   --color-accent-dim: #4a85d4;
@@ -54,6 +54,11 @@
     font-family: var(--font-sans);
     font-size: 14px;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: 'kern', 'liga', 'calt';
+    font-optical-sizing: auto;
+    font-synthesis: none;
   }
   a { color: inherit; text-decoration: none; }
   button { font: inherit; cursor: pointer; background: transparent; border: none; color: inherit; }
@@ -83,16 +88,28 @@
     font-weight: 500;
   }
 
+  /* Leftmost rail column */
+  .rail {
+    background: color-mix(in oklab, #000 5%, var(--color-bg-panel));
+    border-right: 1px solid var(--color-fg-faint);
+  }
+
+  [data-theme='dark'] .rail {
+    background: color-mix(in oklab, #000 15%, var(--color-bg-panel));
+  }
+
   /* Vertical rotated brand in rail */
   .rail-brand {
-    font-family: var(--font-serif);
-    font-size: 14px;
-    font-weight: 600;
+    font-family: var(--font-sans);
+    font-size: 10.5px;
+    font-weight: 500;
     writing-mode: vertical-rl;
     transform: rotate(180deg);
-    letter-spacing: 0.4em;
+    letter-spacing: 0.45em;
     text-transform: uppercase;
-    color: var(--color-fg-dim);
+    color: var(--color-fg-muted);
+    font-feature-settings: 'ss01', 'ss02';
+    padding-block: 6px;
   }
 
   /* Article body prose */

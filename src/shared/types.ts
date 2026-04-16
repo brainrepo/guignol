@@ -23,10 +23,14 @@ export interface ArticleFrontmatter {
   published: string
   fetched: string
   read: boolean
-  starred: boolean
   tags: string[]
   summary?: string
   summary_generated_at?: string
+  reader_body?: string
+  reader_fetched_at?: string
+  reader_source_url?: string
+  reader_error?: string
+  reader_word_count?: number
 }
 
 export interface Article extends ArticleFrontmatter {

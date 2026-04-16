@@ -36,8 +36,6 @@
     "loading": "Chargement…",
     "notFound": "Article introuvable",
     "original": "Original",
-    "save": "Enregistrer",
-    "saved": "Enregistré",
     "highlights": "Surlignages",
     "summaryAi": "Résumé IA",
     "regenerate": "Régénérer",
@@ -52,7 +50,16 @@
     "scrollToHighlight": "Aller au passage",
     "drawerEmpty": "Sélectionnez du texte dans l'article et cliquez sur Surligner pour l'ajouter.",
     "highlightCountLabel_one": "{{count}} surlignage",
-    "highlightCountLabel_other": "{{count}} surlignages"
+    "highlightCountLabel_other": "{{count}} surlignages",
+    "readerMode": "Mode lecteur",
+    "readerLoading": "Récupération…",
+    "readerAutoFetching": "Récupération de l'article complet…",
+    "readerRefresh": "Actualiser le lecteur",
+    "readerToggleFeed": "Flux",
+    "readerToggleReader": "Lecteur",
+    "readerShortWarning": "L'article extrait semble très court ({{words}} mots). Il peut être incomplet — essayez l'original.",
+    "readerErrorPrefix": "Échec de la récupération :",
+    "readerRetry": "Réessayer"
   },
   "settings": {
     "title": "Paramètres",

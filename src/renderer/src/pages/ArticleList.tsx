@@ -1,6 +1,5 @@
 import { Link, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Star } from 'lucide-react'
 import type { ArticleMeta, Feed } from '../../../shared/types'
 import { colorForFeed } from '../util/color'
 
@@ -52,17 +51,8 @@ export default function ArticleList({ articles, feeds }: Props): JSX.Element {
                   {feedTitleBySlug(a.feed)}
                 </span>
               </div>
-              <div className="font-serif text-[17px] leading-snug font-normal text-fg flex items-start gap-1.5">
-                {a.starred && (
-                  <Star
-                    size={14}
-                    strokeWidth={2}
-                    className="text-accent shrink-0 mt-1"
-                    fill="currentColor"
-                    aria-hidden
-                  />
-                )}
-                <span>{a.title}</span>
+              <div className="font-serif text-[17px] leading-snug font-normal text-fg">
+                {a.title}
               </div>
               <div className="flex items-center gap-2 mt-1.5 text-[10px] uppercase tracking-caps text-fg-muted">
                 <span>

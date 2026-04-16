@@ -3,10 +3,67 @@ import { useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
-import { ArrowUpRight, Sparkles, Star, Trash2, X } from 'lucide-react'
+import { ArrowUpRight, BookOpen, Loader2, RefreshCw, Sparkles, Trash2, X } from 'lucide-react'
 import type { Article, Feed, Highlight } from '../../../shared/types'
 import { colorForFeed } from '../util/color'
 import { applyHighlights, scrollToHighlight } from '../util/highlights'
+
+function countWords(text: string): number {
+  const matches = text.trim().match(/\S+/g)
+  return matches ? matches.length : 0
+}
+
+/**
+ * TODO (user contribution): soglia "estrazione troppo corta".
+ *
+ * Quando Readability riesce ma ritorna pochissimo testo, di solito siamo
+ * davanti a un paywall o a una pagina con contenuto lazy-loaded. Il banner
+ * che usa questa funzione avvisa l'utente senza nascondergli comunque il
+ * contenuto estratto. Strategie possibili:
+ *
+ *   - Soglia assoluta: `readerWords < 120` — semplice, ma ingiusta con post
+ *     molto brevi tipo "link blog" (Daring Fireball, Kottke, Waxy).
+ *   - Rapporto reader/feed: se `readerWords < 1.5 * feedWords`, probabile
+ *     paywall (reader non dà molto più del teaser). Più preciso.
+ *   - Combinazione: sospetto se reader < 120 parole E reader < 2× feed.
+ *   - Ritorna sempre false e fidati dell'utente.
+ *
+ * @param readerWords Numero di parole dell'estrazione reader
+ * @param feedBody Markdown body del feed (puoi contarne le parole o
+ *                 ignorarlo se la tua soglia è solo sul reader)
+ * @returns true → UI mostra banner "estrazione sospetta" sopra il reader body
+ */
+function isReaderTooShort(readerWords: number, feedBody: string): boolean {
+  const FLOOR = 150
+  const RATIO = 1.5
+  if (readerWords <= 0) return false
+  if (readerWords < FLOOR) return true
+  const feedWords = countWords(feedBody)
+  return feedWords > 0 && readerWords < feedWords * RATIO
+}
+
+/**
+ * TODO (user contribution): soglia "feed troppo corto per essere letto bene".
+ *
+ * Usata per decidere se aprire direttamente la vista reader quando il feed
+ * pubblica solo un teaser e abbiamo già il reader_body su disco. Non tocca
+ * la fetch iniziale — fa scattare l'auto-switch solo dopo che l'utente ha
+ * già fatto reader:fetch una volta su quell'articolo.
+ *
+ * Considerazioni:
+ *   - Soglia assoluta (es. 200 parole) — semplice, copre la maggior parte
+ *     dei feed teaser (Medium, Substack snippet, corporate blog).
+ *   - Più alta → reader "ruba" più articoli al feed (più invasiva).
+ *   - Più bassa → molti teaser restano in feed view (meno seamless).
+ *   - 200 parole ≈ 1–2 paragrafi, buon compromesso.
+ *
+ * @param feedBody Markdown body del feed così come arriva da disco
+ * @returns true → alla prossima apertura si aprirà in reader view
+ */
+function isFeedTooShort(feedBody: string): boolean {
+  const SHORT_FEED_THRESHOLD = 200
+  return countWords(feedBody) < SHORT_FEED_THRESHOLD
+}
 
 interface Props {
   id: string
@@ -26,6 +83,9 @@ export default function ArticleDetail({ id, onPatched, feeds }: Props): JSX.Elem
   const [article, setArticle] = useState<Article | null>(null)
   const [loading, setLoading] = useState(true)
   const [summarizing, setSummarizing] = useState(false)
+  const [readerLoading, setReaderLoading] = useState(false)
+  const [readerAutoFetching, setReaderAutoFetching] = useState(false)
+  const [viewMode, setViewMode] = useState<'feed' | 'reader'>('feed')
   const [error, setError] = useState<string | null>(null)
   const [highlights, setHighlights] = useState<Highlight[]>([])
   const [tip, setTip] = useState<SelectionTip | null>(null)
@@ -40,6 +100,8 @@ export default function ArticleDetail({ id, onPatched, feeds }: Props): JSX.Elem
     setArticle(null)
     setError(null)
     setHighlights([])
+    setViewMode('feed')
+    setReaderAutoFetching(false)
     Promise.all([
       window.guignol.articles.read(id),
       window.guignol.highlights.list(id).catch(() => [] as Highlight[])
@@ -49,9 +111,38 @@ export default function ArticleDetail({ id, onPatched, feeds }: Props): JSX.Elem
         setArticle(a)
         setHighlights(hs)
         setLoading(false)
+        if (a.reader_body && isFeedTooShort(a.body)) {
+          setViewMode('reader')
+        }
         if (!a.read) {
           await window.guignol.articles.patch(id, { read: true })
+          if (cancelled) return
           onPatched()
+        }
+        if (!a.reader_body && !a.reader_error && a.link && isFeedTooShort(a.body)) {
+          setReaderAutoFetching(true)
+          try {
+            const r = await window.guignol.reader.fetch(id)
+            if (cancelled) return
+            setArticle((prev) => prev ? {
+              ...prev,
+              reader_body: r.body,
+              reader_source_url: r.sourceUrl,
+              reader_word_count: r.wordCount,
+              reader_fetched_at: new Date().toISOString(),
+              reader_error: undefined
+            } : prev)
+            setViewMode('reader')
+            const scroller = bodyRef.current?.closest('article')?.parentElement
+            scroller?.scrollTo({ top: 0, behavior: 'smooth' })
+            onPatched()
+          } catch (e) {
+            if (cancelled) return
+            const msg = e instanceof Error ? e.message : String(e)
+            setArticle((prev) => prev ? { ...prev, reader_error: msg } : prev)
+          } finally {
+            if (!cancelled) setReaderAutoFetching(false)
+          }
         }
       })
       .catch((e) => { if (!cancelled) { setError(String(e)); setLoading(false) } })
@@ -111,12 +202,6 @@ export default function ArticleDetail({ id, onPatched, feeds }: Props): JSX.Elem
   const feedTitle = feeds.find((f) => f.slug === article.feed)?.title ?? article.feed
   const feedColor = colorForFeed(article.feed)
 
-  const toggleStar = async (): Promise<void> => {
-    await window.guignol.articles.patch(id, { starred: !article.starred })
-    setArticle({ ...article, starred: !article.starred })
-    onPatched()
-  }
-
   const summarize = async (): Promise<void> => {
     setSummarizing(true)
     setError(null)
@@ -128,6 +213,30 @@ export default function ArticleDetail({ id, onPatched, feeds }: Props): JSX.Elem
       setError(e instanceof Error ? e.message : String(e))
     } finally {
       setSummarizing(false)
+    }
+  }
+
+  const fetchReader = async (): Promise<void> => {
+    setReaderLoading(true)
+    setError(null)
+    try {
+      const r = await window.guignol.reader.fetch(id)
+      setArticle({
+        ...article,
+        reader_body: r.body,
+        reader_source_url: r.sourceUrl,
+        reader_word_count: r.wordCount,
+        reader_fetched_at: new Date().toISOString(),
+        reader_error: undefined
+      })
+      setViewMode('reader')
+      onPatched()
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e)
+      setError(msg)
+      setArticle({ ...article, reader_error: msg })
+    } finally {
+      setReaderLoading(false)
     }
   }
 
@@ -146,8 +255,7 @@ export default function ArticleDetail({ id, onPatched, feeds }: Props): JSX.Elem
     }
   }
 
-  const actionBtn = 'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[13px] text-fg-dim hover:text-fg hover:bg-bg-hover transition-colors disabled:opacity-40 disabled:hover:text-fg-dim disabled:hover:bg-transparent'
-  const primaryBtn = 'inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[13px] font-medium text-bg bg-accent hover:bg-accent-dim transition-colors disabled:opacity-40'
+  const actionBtn = 'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[13px] text-fg-dim hover:text-fg hover:bg-bg-hover transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 disabled:opacity-40 disabled:hover:text-fg-dim disabled:hover:bg-transparent'
 
   return (
     <article className="max-w-[680px] mx-auto px-14 pt-14 pb-20">
@@ -178,7 +286,7 @@ export default function ArticleDetail({ id, onPatched, feeds }: Props): JSX.Elem
             </>
           )}
         </div>
-        <div className="flex items-center gap-1 mt-4 flex-wrap">
+        <div className="flex items-center gap-2 mt-4 flex-wrap">
           <button
             onClick={() => window.guignol.articles.openExternal(article.link)}
             className={actionBtn}
@@ -186,34 +294,68 @@ export default function ArticleDetail({ id, onPatched, feeds }: Props): JSX.Elem
             <ArrowUpRight size={14} strokeWidth={2} aria-hidden />
             <span>{t('articleDetail.original')}</span>
           </button>
-          <button onClick={toggleStar} className={actionBtn}>
-            <Star
-              size={14}
-              strokeWidth={2}
-              aria-hidden
-              className={article.starred ? 'text-accent' : ''}
-              fill={article.starred ? 'currentColor' : 'none'}
-            />
-            <span>{article.starred ? t('articleDetail.saved') : t('articleDetail.save')}</span>
-          </button>
-          <button
-            onClick={() => setDrawerOpen((v) => !v)}
-            disabled={highlights.length === 0}
-            aria-pressed={drawerOpen}
-            className={actionBtn}
-          >
-            <span>{t('articleDetail.highlights')}</span>
-            {highlights.length > 0 && (
+          {!article.reader_body ? (
+            <button onClick={fetchReader} disabled={readerLoading} className={actionBtn}>
+              {readerLoading ? (
+                <Loader2 size={14} strokeWidth={2} aria-hidden className="animate-spin" />
+              ) : (
+                <BookOpen size={14} strokeWidth={2} aria-hidden />
+              )}
+              <span>
+                {readerLoading
+                  ? t('articleDetail.readerLoading')
+                  : t('articleDetail.readerMode')}
+              </span>
+            </button>
+          ) : (
+            <div className="inline-flex items-center gap-0.5">
+              <div className="inline-flex rounded-full bg-bg-alt p-0.5" role="group" aria-label={t('articleDetail.readerMode')}>
+                <button
+                  onClick={() => setViewMode('feed')}
+                  aria-pressed={viewMode === 'feed'}
+                  className={`px-3 py-1 rounded-full text-[12px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 ${
+                    viewMode === 'feed' ? 'bg-bg text-fg shadow-sm' : 'text-fg-muted hover:text-fg'
+                  }`}
+                >
+                  {t('articleDetail.readerToggleFeed')}
+                </button>
+                <button
+                  onClick={() => setViewMode('reader')}
+                  aria-pressed={viewMode === 'reader'}
+                  className={`px-3 py-1 rounded-full text-[12px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 ${
+                    viewMode === 'reader' ? 'bg-bg text-fg shadow-sm' : 'text-fg-muted hover:text-fg'
+                  }`}
+                >
+                  {t('articleDetail.readerToggleReader')}
+                </button>
+              </div>
+              <button
+                onClick={fetchReader}
+                disabled={readerLoading}
+                aria-label={t('articleDetail.readerRefresh')}
+                title={t('articleDetail.readerRefresh')}
+                className="inline-flex items-center justify-center rounded-full bg-bg-alt p-1.5 text-fg-muted hover:text-fg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 disabled:opacity-40 disabled:hover:text-fg-muted"
+              >
+                {readerLoading ? (
+                  <Loader2 size={14} strokeWidth={2} aria-hidden className="animate-spin" />
+                ) : (
+                  <RefreshCw size={14} strokeWidth={2} aria-hidden />
+                )}
+              </button>
+            </div>
+          )}
+          {highlights.length > 0 && (
+            <button
+              onClick={() => setDrawerOpen((v) => !v)}
+              aria-pressed={drawerOpen}
+              className={actionBtn}
+            >
+              <span>{t('articleDetail.highlights')}</span>
               <span className="text-[11px] leading-none px-1.5 py-0.5 rounded-full bg-bg-alt text-fg-dim font-semibold">
                 {highlights.length}
               </span>
-            )}
-          </button>
-          <div className="flex-1" />
-          <button onClick={summarize} disabled={summarizing} className={primaryBtn}>
-            <Sparkles size={14} strokeWidth={2} aria-hidden />
-            <span>{summarizing ? t('articleDetail.generating') : article.summary ? t('articleDetail.regenerate') : t('articleDetail.summaryAi')}</span>
-          </button>
+            </button>
+          )}
         </div>
       </header>
 
@@ -231,8 +373,36 @@ export default function ArticleDetail({ id, onPatched, feeds }: Props): JSX.Elem
         </section>
       )}
 
+      {viewMode === 'feed' && readerAutoFetching && (
+        <div className="mb-6 text-[13px] text-fg-muted flex items-center gap-2">
+          <Loader2 size={13} strokeWidth={2} aria-hidden className="animate-spin" />
+          <span className="italic">{t('articleDetail.readerAutoFetching')}</span>
+        </div>
+      )}
+
+      {viewMode === 'feed' && !readerAutoFetching && article.reader_error && (
+        <div className="mb-6 text-[13px] text-fg-muted flex items-center gap-3">
+          <span>
+            <span className="text-fg-dim">{t('articleDetail.readerErrorPrefix')}</span>{' '}
+            {article.reader_error}
+          </span>
+          <button onClick={fetchReader} disabled={readerLoading} className={actionBtn}>
+            {t('articleDetail.readerRetry')}
+          </button>
+        </div>
+      )}
+
+      {viewMode === 'reader' && article.reader_word_count !== undefined &&
+        isReaderTooShort(article.reader_word_count, article.body) && (
+          <div className="mb-6 py-3 px-4 rounded-md bg-bg-alt text-[13px] text-fg-dim">
+            {t('articleDetail.readerShortWarning', { words: article.reader_word_count })}
+          </div>
+        )}
+
       <section className="article-body" ref={bodyRef}>
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>{article.body}</ReactMarkdown>
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+          {viewMode === 'reader' && article.reader_body ? article.reader_body : article.body}
+        </ReactMarkdown>
       </section>
 
       {tip && (
@@ -311,6 +481,20 @@ export default function ArticleDetail({ id, onPatched, feeds }: Props): JSX.Elem
           </ul>
         </div>
       </aside>
+
+      <button
+        onClick={summarize}
+        disabled={summarizing}
+        aria-label={article.summary ? t('articleDetail.regenerate') : t('articleDetail.summaryAi')}
+        className="fixed bottom-8 right-8 z-30 inline-flex items-center gap-2 px-5 py-3 rounded-full text-[14px] font-medium text-bg bg-accent hover:bg-accent-dim shadow-xl transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+      >
+        {summarizing ? (
+          <Loader2 size={16} strokeWidth={2} aria-hidden className="animate-spin" />
+        ) : (
+          <Sparkles size={16} strokeWidth={2} aria-hidden />
+        )}
+        <span>{summarizing ? t('articleDetail.generating') : article.summary ? t('articleDetail.regenerate') : t('articleDetail.summaryAi')}</span>
+      </button>
     </article>
   )
 }

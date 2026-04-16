@@ -28,6 +28,10 @@ const api = {
     summarize: (id: string): Promise<{ summary: string }> =>
       ipcRenderer.invoke('ai:summarize', id)
   },
+  reader: {
+    fetch: (id: string): Promise<{ body: string; sourceUrl: string; wordCount: number }> =>
+      ipcRenderer.invoke('reader:fetch', id)
+  },
   opml: {
     import: (): Promise<{ added: number; skipped: number; errors: string[] } | null> =>
       ipcRenderer.invoke('opml:import'),

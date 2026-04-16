@@ -1,5 +1,5 @@
 import { BrowserWindow, dialog, ipcMain, shell } from 'electron'
-import type { AppSettings } from '../shared/types.js'
+import type { AppSettings, ArticleMeta } from '../shared/types.js'
 import { settings } from './settings.js'
 import { addFeed, listFeeds, removeFeed } from './feeds/manager.js'
 import { probeFeed } from './feeds/fetcher.js'
@@ -8,6 +8,7 @@ import { buildIndex, getAllMeta, getMeta, getMetaByFeed, upsertMeta } from './va
 import { readArticleFile } from './vault/reader.js'
 import { updateArticleFrontmatter } from './vault/writer.js'
 import { summarize } from './ai/claude-cli.js'
+import { fetchReaderContent, ReaderExtractionError, type ReaderResult } from './reader/extract.js'
 import { importOpml } from './opml/import.js'
 import { exportOpml } from './opml/export.js'
 import { notifyNewArticles } from './notifications.js'
@@ -77,6 +78,34 @@ export function registerIpc(): void {
     return result
   })
 
+  // ===== Reader mode =====
+  ipcMain.handle('reader:fetch', async (_e, id: string) => {
+    const meta = getMeta(id)
+    if (!meta) throw new Error(`Article ${id} not found`)
+    if (!meta.link) throw new Error(`Article ${id} has no link to fetch`)
+
+    try {
+      const result = await fetchReaderContent(meta.link)
+      await persistReaderSuccess(meta, result)
+      return result
+    } catch (err) {
+      const extractionErr = err instanceof ReaderExtractionError
+        ? err
+        : new ReaderExtractionError(err instanceof Error ? err.message : String(err), 'parse')
+
+      const recovered = await recoverReaderFailure(extractionErr, meta)
+      if (recovered) {
+        await persistReaderSuccess(meta, recovered)
+        return recovered
+      }
+
+      const patch = { reader_error: extractionErr.message }
+      await updateArticleFrontmatter(meta.filePath, patch)
+      upsertMeta({ ...meta, ...patch })
+      throw extractionErr
+    }
+  })
+
   // ===== OPML =====
   ipcMain.handle('opml:import', async () => {
     const win = BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0]
@@ -137,4 +166,46 @@ export function registerIpc(): void {
       win.webContents.send('articles:new', { totalNew })
     }
   })
+}
+
+async function persistReaderSuccess(meta: ArticleMeta, result: ReaderResult): Promise<void> {
+  const patch = {
+    reader_body: result.body,
+    reader_fetched_at: new Date().toISOString(),
+    reader_source_url: result.sourceUrl,
+    reader_word_count: result.wordCount,
+    reader_error: undefined
+  }
+  await updateArticleFrontmatter(meta.filePath, patch)
+  upsertMeta({ ...meta, ...patch })
+}
+
+/**
+ * TODO (user contribution): politica di fallback su estrazione fallita.
+ *
+ * Oggi: se fetchReaderContent lancia, salviamo `reader_error` e rilanciamo.
+ * È il comportamento più onesto ma non sempre il più utile. Alternative:
+ *
+ *   - Retry con User-Agent browser-like (tipicamente utile per 403/406 di
+ *     Cloudflare / Akamai). Vedi hook A in extract.ts.
+ *   - Silenzioso: se il feed body è già "abbastanza lungo" (es. > 400
+ *     parole), considera che reader mode non serve e ritorna null SENZA
+ *     marcare l'articolo come fallito — l'utente non vedrà un errore.
+ *   - Fallback grezzo: re-fetcha la pagina e passa tutto `<article>` /
+ *     `<main>` / `<body>` direttamente a Turndown, saltando Readability.
+ *     Utile per siti con markup minimale su cui Readability si confonde.
+ *   - Blacklist per dominio: se `new URL(meta.link).hostname` è in una
+ *     lista di domini "non retry" (es. nytimes.com), ritorna null e lascia
+ *     che `reader_error` persista. Evita retry continui su paywall noti.
+ *
+ * @param err L'errore originale (ReaderExtractionError con .kind e .status)
+ * @param meta L'ArticleMeta dell'articolo (per accedere a meta.link, meta.feed, ecc.)
+ * @returns ReaderResult da persistere come successo, oppure null per rilanciare l'errore
+ */
+async function recoverReaderFailure(
+  _err: ReaderExtractionError,
+  _meta: ArticleMeta
+): Promise<ReaderResult | null> {
+  // TODO: implementa la tua politica di recupero.
+  return null
 }

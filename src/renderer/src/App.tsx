@@ -13,7 +13,6 @@ import DigestsList from './pages/DigestsList'
 import DigestDetail from './pages/DigestDetail'
 import AddFeedModal from './components/AddFeedModal'
 import { applyTheme, watchSystemTheme } from './util/theme'
-import guignolMark from './assets/guignol.png'
 
 export default function App(): JSX.Element {
   const { t } = useTranslation()
@@ -56,11 +55,20 @@ export default function App(): JSX.Element {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent): void => {
-      if ((e.metaKey || e.ctrlKey) && e.key === '\\') {
+      const mod = e.metaKey || e.ctrlKey
+      if (!mod) return
+      const togglesSidebar =
+        e.code === 'Backslash' ||
+        e.code === 'IntlBackslash' ||
+        e.key === '\\' ||
+        e.key === '/' ||
+        e.key.toLowerCase() === 'b'
+      if (togglesSidebar) {
         e.preventDefault()
         setSidebarOpen((v) => !v)
+        return
       }
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'n') {
+      if (e.key.toLowerCase() === 'n') {
         e.preventDefault()
         setAddFeedOpen(true)
       }
@@ -116,22 +124,18 @@ export default function App(): JSX.Element {
       style={{ gridTemplateColumns }}
     >
       <div
-        className="flex flex-col items-center pt-8 pb-6 bg-bg-panel"
+        className="rail flex flex-col items-center pt-8 pb-6"
         style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}
       >
-        <img
-          src={guignolMark}
-          alt="Guignol"
-          className="w-14 h-14 object-contain mb-2 select-none pointer-events-none"
-          draggable={false}
-        />
-        <div className="rail-brand">Guignol</div>
-        <SettingsRailButton className="mt-auto" />
+        <div className="flex-1 flex items-center justify-center">
+          <div className="rail-brand">Guignol</div>
+        </div>
+        <SettingsRailButton />
         <button
           onClick={() => setAddFeedOpen(true)}
           aria-label={t('app.addFeed')}
           title={t('app.addFeedTooltip')}
-          className="mt-2 w-9 h-9 flex items-center justify-center rounded-full border border-fg-faint text-accent hover:bg-accent hover:text-bg hover:border-accent transition-colors"
+          className="mt-2 w-9 h-9 flex items-center justify-center rounded-full bg-accent text-bg hover:bg-accent-dim transition-colors"
           style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
         >
           <Plus size={18} strokeWidth={2.25} aria-hidden />
@@ -163,7 +167,7 @@ export default function App(): JSX.Element {
         />
         {!onDigestsRoute && selectedFeedTitle && (
           <div className="px-8 pb-5">
-            <h1 className="font-serif text-4xl font-normal tracking-tight uppercase text-fg m-0 mb-1.5">
+            <h1 className="font-serif text-2xl font-normal tracking-tight text-fg m-0 mb-1.5">
               {selectedFeedTitle}
             </h1>
             <div className="label">
@@ -244,7 +248,7 @@ function SettingsRailButton({ className = '' }: { className?: string }): JSX.Ele
       onClick={() => navigate(active ? '/' : '/settings')}
       aria-label={t('app.settings')}
       title={t('app.settings')}
-      className={`${className} w-9 h-9 flex items-center justify-center rounded-full transition-colors ${active ? 'bg-accent text-bg' : 'text-fg-muted hover:text-fg hover:bg-bg-hover'}`}
+      className={`${className} w-9 h-9 flex items-center justify-center rounded-full transition-colors ${active ? 'text-fg bg-bg-hover' : 'text-fg-muted hover:text-fg hover:bg-bg-hover'}`}
       style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
     >
       <SettingsIcon size={16} strokeWidth={2} aria-hidden />

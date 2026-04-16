@@ -36,8 +36,6 @@
     "loading": "Cargando…",
     "notFound": "Artículo no encontrado",
     "original": "Original",
-    "save": "Guardar",
-    "saved": "Guardado",
     "highlights": "Destacados",
     "summaryAi": "Resumen IA",
     "regenerate": "Regenerar",
@@ -52,7 +50,16 @@
     "scrollToHighlight": "Desplazar al pasaje",
     "drawerEmpty": "Selecciona texto en el artículo y pulsa Destacar para añadirlo.",
     "highlightCountLabel_one": "{{count}} destacado",
-    "highlightCountLabel_other": "{{count}} destacados"
+    "highlightCountLabel_other": "{{count}} destacados",
+    "readerMode": "Modo lector",
+    "readerLoading": "Descargando…",
+    "readerAutoFetching": "Obteniendo artículo completo…",
+    "readerRefresh": "Actualizar lector",
+    "readerToggleFeed": "Feed",
+    "readerToggleReader": "Lector",
+    "readerShortWarning": "El artículo extraído parece muy corto ({{words}} palabras). Puede estar incompleto — prueba el original.",
+    "readerErrorPrefix": "La descarga del lector falló:",
+    "readerRetry": "Reintentar"
   },
   "settings": {
     "title": "Ajustes",

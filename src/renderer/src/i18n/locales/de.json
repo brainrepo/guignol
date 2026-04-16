@@ -36,8 +36,6 @@
     "loading": "Wird geladen…",
     "notFound": "Artikel nicht gefunden",
     "original": "Original",
-    "save": "Speichern",
-    "saved": "Gespeichert",
     "highlights": "Markierungen",
     "summaryAi": "KI-Zusammenfassung",
     "regenerate": "Neu erzeugen",
@@ -52,7 +50,16 @@
     "scrollToHighlight": "Zur Stelle scrollen",
     "drawerEmpty": "Text im Artikel markieren und auf Markieren klicken, um ihn hinzuzufügen.",
     "highlightCountLabel_one": "{{count}} Markierung",
-    "highlightCountLabel_other": "{{count}} Markierungen"
+    "highlightCountLabel_other": "{{count}} Markierungen",
+    "readerMode": "Lesemodus",
+    "readerLoading": "Wird geladen…",
+    "readerAutoFetching": "Vollständiger Artikel wird abgerufen…",
+    "readerRefresh": "Lesemodus neu laden",
+    "readerToggleFeed": "Feed",
+    "readerToggleReader": "Leser",
+    "readerShortWarning": "Der extrahierte Artikel wirkt sehr kurz ({{words}} Wörter). Er könnte unvollständig sein — versuche das Original.",
+    "readerErrorPrefix": "Leser-Abruf fehlgeschlagen:",
+    "readerRetry": "Erneut versuchen"
   },
   "settings": {
     "title": "Einstellungen",

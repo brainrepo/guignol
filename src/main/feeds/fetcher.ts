@@ -45,7 +45,6 @@ export async function fetchFeed(feed: Feed): Promise<FetchResult> {
         published: publishedISO,
         fetched: new Date().toISOString(),
         read: false,
-        starred: false,
         tags: item.categories ?? []
       }
 

@@ -64,7 +64,7 @@ export async function writeArticle(
  *   - Sovrascrivere preserva eventuali campi aggiunti come `summary` o `read`?
  *     (NO: vengono persi se non li ri-iniettiamo dal file esistente)
  *   - Vuoi confrontare body o solo data di pubblicazione?
- *   - Vuoi tenere `read`/`starred`/`summary` del vecchio anche dopo overwrite?
+ *   - Vuoi tenere `read`/`summary` del vecchio anche dopo overwrite?
  *
  * Per ora ritorno 'skip' — modifica qui per cambiare comportamento.
  */
@@ -78,7 +78,7 @@ async function resolveConflict(
 
 /**
  * Update frontmatter di un articolo esistente preservando il body.
- * Usato per aggiungere summary AI, toggle read/starred.
+ * Usato per aggiungere summary AI, toggle read.
  */
 export async function updateArticleFrontmatter(
   filePath: string,
