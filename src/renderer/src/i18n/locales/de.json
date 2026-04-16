@@ -17,6 +17,8 @@
     "resizeSidebar": "Seitenleiste anpassen",
     "resizeArticleList": "Artikelliste anpassen",
     "refresh": "Aktualisieren",
+    "markAllRead": "Alle als gelesen",
+    "markAllReadTooltip": "Alle Artikel der aktuellen Ansicht als gelesen markieren",
     "settings": "Einstellungen",
     "selectArticle": "Wähle einen Artikel zum Lesen",
     "articleCountUnread": "{{unread}} ungelesen · {{total}} Artikel",

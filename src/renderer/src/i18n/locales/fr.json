@@ -17,6 +17,8 @@
     "resizeSidebar": "Redimensionner la barre latérale",
     "resizeArticleList": "Redimensionner la liste d'articles",
     "refresh": "Actualiser",
+    "markAllRead": "Tout marquer comme lu",
+    "markAllReadTooltip": "Marquer comme lus tous les articles de la vue actuelle",
     "settings": "Paramètres",
     "selectArticle": "Sélectionnez un article pour le lire",
     "articleCountUnread": "{{unread}} non lus · {{total}} articles",

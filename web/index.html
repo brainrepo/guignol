@@ -32,6 +32,7 @@
       </a>
       <nav class="nav-links" aria-label="Primary">
         <a href="#vault">Vault</a>
+        <a href="#folders">Folders</a>
         <a href="#reading">Reading</a>
         <a href="#digests">Digests</a>
         <a href="#claude">Claude</a>
@@ -61,18 +62,20 @@
         Guignol is a free RSS reader that stores every article, highlight,
         and AI-generated digest as plain text in a folder you own —
         ready for Claude Code, Obsidian, or any tool that speaks markdown.
+        Organize feeds into folders by drag-and-drop, and scope each digest
+        to the feeds that matter today.
       </p>
       <div class="cta">
         <a class="btn btn-primary" href="#download">Download for macOS</a>
-        <a class="btn btn-ghost" href="https://github.com/" rel="noopener">View on GitHub →</a>
+        <a class="btn btn-ghost" href="https://github.com/brainrepo/guignol" rel="noopener">View on GitHub →</a>
       </div>
       <p class="hero-meta">Free. No account. No telemetry. Your files stay on your Mac.</p>
     </div>
 
     <figure class="hero-shot">
       <img
-        src="assets/screenshot/reader.png"
-        alt="The Guignol three-pane reader: feed list on the left, articles in the middle, a long-form reading view on the right with an AI Summary button."
+        src="assets/screenshot/hero.png"
+        alt="The Guignol three-pane reader: rail and sidebar with folders on the left, article list in the middle, a long-form reading view on the right with an AI Summary button."
         loading="eager"
         decoding="async">
     </figure>
@@ -95,6 +98,7 @@
           <li>Configurable <strong>vault</strong>, <strong>highlights</strong>, and <strong>digests</strong> paths.</li>
           <li>One markdown file per article, with clean YAML frontmatter.</li>
           <li>Import and export OPML for your feed list.</li>
+          <li>Five languages (English, Italian, Spanish, French, German), light / dark / system themes.</li>
         </ul>
       </div>
       <figure class="col-visual shot-frame">
@@ -105,13 +109,65 @@
           decoding="async">
       </figure>
     </div>
+
+    <div class="container band">
+      <div class="band-text">
+        <p class="label">Mark all read</p>
+        <h3 class="band-title">Wipe the backlog in one click.</h3>
+        <p class="body">
+          A single button in the toolbar marks every unread article in the
+          current view as read — scoped to the selected feed, the current
+          folder, or everything. The articles stay on disk; only the
+          <code>read: true</code> flag flips.
+        </p>
+      </div>
+      <figure class="band-visual shot-frame">
+        <img
+          src="assets/screenshot/mark-all-read.png"
+          alt="Close-up of Guignol's toolbar: a 'Mark all read' button with a double-check icon sits next to the Refresh button."
+          loading="lazy"
+          decoding="async">
+      </figure>
+    </div>
   </section>
 
-  <!-- 02 — Reading ............................................................. -->
-  <section id="reading" class="section section-alt">
+  <!-- 02 — Folders ............................................................. -->
+  <section id="folders" class="section section-alt">
     <div class="container two-col two-col-reverse">
       <div class="col-text">
-        <p class="label">02 — Close reading</p>
+        <p class="label">02 — Folders</p>
+        <h2 class="h2">Organize without friction.</h2>
+        <p class="body">
+          Group feeds into folders with drag-and-drop. A folder is just a
+          free-form tag on each feed, saved inside <code>feeds.json</code> —
+          no new schema, no hidden state, no lock-in. Rename a folder and
+          every feed inside it moves with it. Delete a folder and its
+          feeds land safely in <em>Uncategorized</em>.
+        </p>
+        <ul class="bullets">
+          <li>Drag a feed onto any folder header to reassign — a 4px
+            threshold keeps plain clicks working.</li>
+          <li>Create an empty folder from the sidebar; it becomes permanent
+            the moment a feed is dropped in.</li>
+          <li>Collapsible folder sections — your reading layout, remembered.</li>
+          <li>Folders travel with your vault. Sync it, and they follow.</li>
+        </ul>
+      </div>
+      <figure class="col-visual shot-frame">
+        <img
+          src="assets/screenshot/folders.png"
+          alt="Guignol's sidebar showing feeds grouped under named folders: one folder expanded with three feeds underneath, one folder collapsed, and an Uncategorized section beneath them."
+          loading="lazy"
+          decoding="async">
+      </figure>
+    </div>
+  </section>
+
+  <!-- 03 — Reading ............................................................. -->
+  <section id="reading" class="section">
+    <div class="container two-col two-col-reverse">
+      <div class="col-text">
+        <p class="label">03 — Close reading</p>
         <h2 class="h2">Highlight what matters.<br>Summaries on demand.</h2>
         <p class="body">
           Guignol strips the junk and renders every article in a
@@ -136,11 +192,11 @@
     </div>
   </section>
 
-  <!-- 03 — Highlights gathered ................................................ -->
-  <section id="highlights" class="section">
+  <!-- 04 — Highlights gathered ................................................ -->
+  <section id="highlights" class="section section-alt">
     <div class="container two-col">
       <div class="col-text">
-        <p class="label">03 — Highlights, gathered</p>
+        <p class="label">04 — Highlights, gathered</p>
         <h2 class="h2">Every sentence you saved,<br>in one place.</h2>
         <p class="body">
           A single view gathers every highlight from every feed —
@@ -165,10 +221,10 @@
     </div>
   </section>
 
-  <!-- 04 — Digests ............................................................. -->
-  <section id="digests" class="section section-alt">
+  <!-- 05 — Digests ............................................................. -->
+  <section id="digests" class="section">
     <div class="container">
-      <p class="label">04 — Digests</p>
+      <p class="label">05 — Digests</p>
       <h2 class="h2">Your week, read for you.</h2>
       <p class="lede">
         Claude reads what you saved and writes a digest every day, week,
@@ -183,31 +239,53 @@
           decoding="async">
       </figure>
 
+      <div class="two-col">
+        <div class="col-text">
+          <p class="label">Scope each digest</p>
+          <h3 class="h3">All feeds. A folder. A single feed.</h3>
+          <p class="body">
+            Not every digest is about everything. Pick a scope when you
+            create one — an entire morning read, just your <em>Tech</em>
+            folder, or one long-tail feed you want in focus this week.
+            The scope is written into the digest's frontmatter, so a year
+            from now you still know what each file was about.
+          </p>
+        </div>
+        <figure class="col-visual shot-frame">
+          <img
+            src="assets/screenshot/digest-scope.png"
+            alt="Guignol's Create Digest modal with a segmented scope control showing All, Folder, Feed; the Folder option is selected and a dropdown lists the available folders."
+            loading="lazy"
+            decoding="async">
+        </figure>
+      </div>
+
       <div class="cards">
         <article class="card">
-          <p class="card-label">Daily</p>
-          <h3 class="card-title">Yesterday, in three bullets.</h3>
+          <p class="card-label">All</p>
+          <h3 class="card-title">Your whole reading week.</h3>
           <p class="card-body">
-            A morning brief of what landed in your feeds overnight,
-            grouped by theme rather than by source.
+            Every unread article, across every feed, pulled into one
+            through-line — the default when you just want a recap.
           </p>
         </article>
 
         <article class="card">
-          <p class="card-label">Weekly</p>
-          <h3 class="card-title">The through-line.</h3>
+          <p class="card-label">By folder</p>
+          <h3 class="card-title">One topic at a time.</h3>
           <p class="card-body">
-            What the week was actually about — the topic every source
-            returned to, written into a single markdown file in your vault.
+            Scope the digest to a folder — <em>Tech</em>, <em>Policy</em>,
+            whatever you've organised — so the themes don't blur across
+            unrelated subjects.
           </p>
         </article>
 
         <article class="card">
-          <p class="card-label">Monthly</p>
-          <h3 class="card-title">Shifts worth noticing.</h3>
+          <p class="card-label">By feed</p>
+          <h3 class="card-title">A single source, distilled.</h3>
           <p class="card-body">
-            Longer arcs: what changed in the conversation, which sources
-            stayed sharp, what you kept re-reading.
+            Track one publication closely: what it was really saying
+            this month, beyond the individual headlines.
           </p>
         </article>
       </div>
@@ -226,7 +304,7 @@
   <section id="claude" class="section section-dark">
     <div class="container two-col">
       <div class="col-text">
-        <p class="label">05 — Bring your own Claude</p>
+        <p class="label">06 — Bring your own Claude</p>
         <h2 class="h2">No API key.<br>No subscription.<br><em>Your</em> Claude. Your terms.</h2>
         <p class="body">
           Every AI feature in Guignol — article summaries, daily,
@@ -301,35 +379,36 @@ Two threads keep returning across what you marked:
   <!-- Download ................................................................. -->
   <section id="download" class="section section-download">
     <div class="container">
-      <p class="label">Download · Guignol 0.1.0</p>
+      <p class="label">Download · Guignol 0.3.0</p>
       <h2 class="h2">Free. For Mac.</h2>
       <p class="lede">macOS 12 Monterey or later. Signed and notarized.</p>
 
       <div class="download-row">
         <a class="btn btn-primary btn-lg"
-           href="downloads/Guignol-0.1.0-arm64.dmg"
-           download>
+           href="https://github.com/brainrepo/guignol/releases/latest"
+           rel="noopener">
           Download for Apple Silicon
         </a>
         <a class="btn btn-ghost btn-lg"
-           href="downloads/Guignol-0.1.0-x64.dmg"
-           download>
+           href="https://github.com/brainrepo/guignol/releases/latest"
+           rel="noopener">
           Download for Intel
         </a>
       </div>
 
       <p class="download-meta-row">
-        <span><strong>Apple Silicon</strong> · 111 MB · M1, M2, M3, M4 Macs</span>
+        <span><strong>Apple Silicon</strong> · M1, M2, M3, M4 Macs</span>
         <span class="sep" aria-hidden="true">·</span>
-        <span><strong>Intel</strong> · 118 MB · pre-2020 Macs</span>
+        <span><strong>Intel</strong> · pre-2020 Macs</span>
       </p>
 
       <p class="tiny">
         Not sure which you have? Open
         <strong>&#63743;&nbsp;→&nbsp;About This Mac</strong> —
         if the <em>Chip</em> line starts with "Apple", grab Apple Silicon.
-        You can also pull releases from
-        <a href="https://github.com/" rel="noopener">GitHub</a>. Homebrew Cask coming soon.
+        Every release ships as signed and notarized DMGs on
+        <a href="https://github.com/brainrepo/guignol/releases" rel="noopener">GitHub Releases</a>.
+        Homebrew Cask coming soon.
       </p>
     </div>
   </section>
@@ -339,13 +418,13 @@ Two threads keep returning across what you marked:
     <div class="container footer-inner">
       <p class="footer-brand">Guignol</p>
       <p class="footer-note">
-        An indie Mac app by <a href="https://github.com/" rel="noopener">Mauro Murru</a>.
+        An indie Mac app by <a href="https://github.com/brainrepo" rel="noopener">Mauro Murru</a>.
         No tracking, no cookies, no telemetry.
       </p>
       <nav class="footer-links" aria-label="Secondary">
-        <a href="https://github.com/" rel="noopener">GitHub</a>
+        <a href="https://github.com/brainrepo/guignol" rel="noopener">GitHub</a>
         <a href="#">Privacy</a>
-        <a href="#">Changelog</a>
+        <a href="https://github.com/brainrepo/guignol/blob/main/CHANGELOG.md" rel="noopener">Changelog</a>
       </nav>
     </div>
   </footer>

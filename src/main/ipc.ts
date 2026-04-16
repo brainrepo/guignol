@@ -71,6 +71,20 @@ export function registerIpc(): void {
     return getMeta(id)
   })
   ipcMain.handle('articles:openExternal', (_e, url: string) => shell.openExternal(url))
+  ipcMain.handle('articles:markAllRead', async (_e, feedSlug?: string) => {
+    const targets = (feedSlug ? getMetaByFeed(feedSlug) : getAllMeta()).filter((m) => !m.read)
+    let updated = 0
+    for (const meta of targets) {
+      try {
+        await updateArticleFrontmatter(meta.filePath, { read: true })
+        upsertMeta({ ...meta, read: true })
+        updated += 1
+      } catch (err) {
+        log.warn('articles', `markAllRead failed for ${meta.id}`, err)
+      }
+    }
+    return updated
+  })
 
   // ===== AI summary =====
   ipcMain.handle('ai:summarize', async (_e, id: string) => {

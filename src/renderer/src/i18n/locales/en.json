@@ -17,6 +17,8 @@
     "resizeSidebar": "Resize sidebar",
     "resizeArticleList": "Resize article list",
     "refresh": "Refresh",
+    "markAllRead": "Mark all read",
+    "markAllReadTooltip": "Mark all articles in the current view as read",
     "settings": "Settings",
     "selectArticle": "Select an article to read",
     "articleCountUnread": "{{unread}} unread · {{total}} articles",

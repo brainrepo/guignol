@@ -4,6 +4,20 @@ All notable changes to Guignol are documented in this file.
 
 Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning follows [SemVer](https://semver.org/).
 
+## [0.3.0] - 2026-04-16
+
+### Added
+- **Mark all read** — TopBar button (`CheckCheck` icon) that marks every unread article in the current view as read. Scope follows the sidebar selection: marks only the selected feed, or every feed when viewing *All*. Disabled when nothing is unread.
+- `window.guignol.articles.markAllRead(feedSlug?)` bridge method; backed by `articles:markAllRead` IPC handler. Returns the number of articles updated.
+
+### Changed
+- `.gitignore` now excludes `*.dmg`, `*.zip`, and `web/downloads/` — hosted release binaries belong in GitHub Releases, not in the repo.
+
+### Fixed
+- Historical DMG artifacts that were blocking `git push` (>100 MB) stripped from the local unpushed commit history via `git filter-branch`.
+
+---
+
 ## [0.2.0] - 2026-04-16
 
 ### Added

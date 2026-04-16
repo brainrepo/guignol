@@ -17,6 +17,8 @@
     "resizeSidebar": "Redimensionar barra lateral",
     "resizeArticleList": "Redimensionar lista de artículos",
     "refresh": "Actualizar",
+    "markAllRead": "Marcar todo leído",
+    "markAllReadTooltip": "Marcar como leídos todos los artículos de la vista actual",
     "settings": "Ajustes",
     "selectArticle": "Selecciona un artículo para leerlo",
     "articleCountUnread": "{{unread}} sin leer · {{total}} artículos",

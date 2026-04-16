@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { PanelLeft, PanelLeftClose, Plus, RefreshCw, Settings as SettingsIcon } from 'lucide-react'
+import { CheckCheck, PanelLeft, PanelLeftClose, Plus, RefreshCw, Settings as SettingsIcon } from 'lucide-react'
 import i18n from './i18n'
 import type { ArticleMeta, Feed, Theme } from '../../shared/types'
 import FeedList from './pages/FeedList'
@@ -164,6 +164,11 @@ export default function App(): JSX.Element {
           onRefresh={async () => { await window.guignol.feeds.refresh(); await reload() }}
           onToggleSidebar={() => setSidebarOpen((v) => !v)}
           sidebarOpen={sidebarOpen}
+          unreadCount={unreadCount}
+          onMarkAllRead={async () => {
+            await window.guignol.articles.markAllRead(selectedFeed ?? undefined)
+            await reload()
+          }}
         />
         {!onDigestsRoute && selectedFeedTitle && (
           <div className="px-8 pb-5">
@@ -214,14 +219,18 @@ export default function App(): JSX.Element {
 function TopBar({
   onRefresh,
   onToggleSidebar,
-  sidebarOpen
+  sidebarOpen,
+  unreadCount,
+  onMarkAllRead
 }: {
   onRefresh: () => void
   onToggleSidebar: () => void
   sidebarOpen: boolean
+  unreadCount: number
+  onMarkAllRead: () => void
 }): JSX.Element {
   const { t } = useTranslation()
-  const btn = 'inline-flex items-center gap-1.5 px-2.5 py-1.5 text-[13px] text-fg-dim rounded hover:text-fg hover:bg-bg-hover'
+  const btn = 'inline-flex items-center gap-1.5 px-2.5 py-1.5 text-[13px] text-fg-dim rounded hover:text-fg hover:bg-bg-hover disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-fg-dim'
   return (
     <div className="flex items-center gap-1 px-8 pt-8 pb-4 justify-end">
       <button
@@ -231,6 +240,14 @@ function TopBar({
         className="p-1.5 text-fg-muted rounded hover:text-fg hover:bg-bg-hover mr-auto"
       >
         {sidebarOpen ? <PanelLeftClose size={16} strokeWidth={2} aria-hidden /> : <PanelLeft size={16} strokeWidth={2} aria-hidden />}
+      </button>
+      <button
+        onClick={onMarkAllRead}
+        disabled={unreadCount === 0}
+        title={t('app.markAllReadTooltip')}
+        className={btn}
+      >
+        <CheckCheck size={14} strokeWidth={2} aria-hidden /> {t('app.markAllRead')}
       </button>
       <button onClick={onRefresh} className={btn}>
         <RefreshCw size={14} strokeWidth={2} aria-hidden /> {t('app.refresh')}

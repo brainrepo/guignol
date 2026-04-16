@@ -26,7 +26,9 @@ const api = {
     patch: (id: string, patch: Record<string, unknown>): Promise<ArticleMeta> =>
       ipcRenderer.invoke('articles:patch', id, patch),
     openExternal: (url: string): Promise<void> =>
-      ipcRenderer.invoke('articles:openExternal', url)
+      ipcRenderer.invoke('articles:openExternal', url),
+    markAllRead: (feedSlug?: string): Promise<number> =>
+      ipcRenderer.invoke('articles:markAllRead', feedSlug)
   },
   ai: {
     summarize: (id: string): Promise<{ summary: string }> =>
