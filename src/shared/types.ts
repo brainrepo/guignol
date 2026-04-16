@@ -6,6 +6,7 @@ export interface Feed {
   lastFetchedAt?: string
   lastError?: string
   errorCount?: number
+  folder?: string
 }
 
 export interface FeedsFile {
@@ -89,12 +90,18 @@ export interface DigestArticleRef {
   published: string
 }
 
+export type DigestScope =
+  | { kind: 'all' }
+  | { kind: 'folder'; name: string }
+  | { kind: 'feed'; slug: string }
+
 export interface DigestDoc {
   id: string
   created: string
   from: string
   to: string
   summary: string
+  scope?: DigestScope
   articles: DigestArticleRef[]
 }
 

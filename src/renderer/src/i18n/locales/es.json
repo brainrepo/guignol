@@ -27,6 +27,12 @@
     "digests": "Resumen",
     "feeds": "Feeds",
     "all": "Todos",
+    "uncategorized": "Sin carpeta",
+    "newFolder": "Nueva carpeta",
+    "newFolderPrompt": "Nombre de la carpeta:",
+    "renameFolder": "Renombrar carpeta",
+    "deleteFolder": "Eliminar carpeta",
+    "confirmDeleteFolder": "¿Eliminar la carpeta «{{name}}»? Los feeds dentro pasarán a Sin carpeta.",
     "confirmRemove": "¿Eliminar este feed? (los artículos en el disco se conservan)"
   },
   "articleList": {
@@ -143,6 +149,12 @@
   "createDigest": {
     "label": "Nuevo digest",
     "title": "Resumir los artículos sin leer",
+    "scopeLabel": "Alcance",
+    "scopeAll": "Todos",
+    "scopeFolder": "Carpeta",
+    "scopeFeed": "Feed",
+    "scopePickFolder": "Elige una carpeta…",
+    "scopePickFeed": "Elige un feed…",
     "fromDate": "Desde el día",
     "presetLast24h": "Últimas 24 horas",
     "presetLast3days": "Últimos 3 días",
@@ -158,6 +170,10 @@
     "title": "Añadir un feed RSS",
     "url": "URL",
     "placeholder": "https://example.com/rss",
+    "folder": "Carpeta",
+    "folderNone": "— Ninguna —",
+    "folderNew": "+ Nueva carpeta…",
+    "folderNamePlaceholder": "Nombre de la carpeta",
     "cancel": "Cancelar",
     "submit": "Añadir",
     "submitting": "Añadiendo…"

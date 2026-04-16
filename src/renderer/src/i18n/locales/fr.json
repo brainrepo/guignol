@@ -27,6 +27,12 @@
     "digests": "Digest",
     "feeds": "Flux",
     "all": "Tous",
+    "uncategorized": "Sans dossier",
+    "newFolder": "Nouveau dossier",
+    "newFolderPrompt": "Nom du dossier :",
+    "renameFolder": "Renommer le dossier",
+    "deleteFolder": "Supprimer le dossier",
+    "confirmDeleteFolder": "Supprimer le dossier « {{name}} » ? Les flux iront dans Sans dossier.",
     "confirmRemove": "Supprimer ce flux ? (les articles sur le disque sont conservés)"
   },
   "articleList": {
@@ -143,6 +149,12 @@
   "createDigest": {
     "label": "Nouveau digest",
     "title": "Résumer les articles non lus",
+    "scopeLabel": "Portée",
+    "scopeAll": "Tous",
+    "scopeFolder": "Dossier",
+    "scopeFeed": "Flux",
+    "scopePickFolder": "Choisir un dossier…",
+    "scopePickFeed": "Choisir un flux…",
     "fromDate": "À partir du",
     "presetLast24h": "Dernières 24 heures",
     "presetLast3days": "3 derniers jours",
@@ -158,6 +170,10 @@
     "title": "Ajouter un flux RSS",
     "url": "URL",
     "placeholder": "https://example.com/rss",
+    "folder": "Dossier",
+    "folderNone": "— Aucun —",
+    "folderNew": "+ Nouveau dossier…",
+    "folderNamePlaceholder": "Nom du dossier",
     "cancel": "Annuler",
     "submit": "Ajouter",
     "submitting": "Ajout…"

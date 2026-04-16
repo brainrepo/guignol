@@ -58,8 +58,25 @@ export async function updateFeed(url: string, patch: Partial<Feed>): Promise<voi
   const data = await readFeedsFile()
   const idx = data.feeds.findIndex((f) => f.url === url)
   if (idx === -1) return
-  data.feeds[idx] = { ...data.feeds[idx], ...patch }
+  const merged = { ...data.feeds[idx], ...patch }
+  if ('folder' in patch && (patch.folder === undefined || patch.folder === '')) {
+    delete merged.folder
+  }
+  data.feeds[idx] = merged
   await writeFeedsFile(data)
+}
+
+export async function renameFolder(oldName: string, newName: string | null): Promise<void> {
+  const data = await readFeedsFile()
+  let changed = false
+  for (const f of data.feeds) {
+    if (f.folder === oldName) {
+      if (newName && newName.length > 0) f.folder = newName
+      else delete f.folder
+      changed = true
+    }
+  }
+  if (changed) await writeFeedsFile(data)
 }
 
 function uniqueSlug(title: string, existing: Feed[]): string {

@@ -27,6 +27,12 @@
     "digests": "Digest",
     "feeds": "Feeds",
     "all": "Tutti",
+    "uncategorized": "Senza cartella",
+    "newFolder": "Nuova cartella",
+    "newFolderPrompt": "Nome della cartella:",
+    "renameFolder": "Rinomina cartella",
+    "deleteFolder": "Elimina cartella",
+    "confirmDeleteFolder": "Eliminare la cartella \"{{name}}\"? I feed al suo interno finiranno in Senza cartella.",
     "confirmRemove": "Rimuovere questo feed? (gli articoli sul disco restano)"
   },
   "articleList": {
@@ -143,6 +149,12 @@
   "createDigest": {
     "label": "Nuovo digest",
     "title": "Riassumi gli articoli non letti",
+    "scopeLabel": "Ambito",
+    "scopeAll": "Tutti",
+    "scopeFolder": "Cartella",
+    "scopeFeed": "Feed",
+    "scopePickFolder": "Scegli una cartella…",
+    "scopePickFeed": "Scegli un feed…",
     "fromDate": "Dal giorno",
     "presetLast24h": "Ultime 24 ore",
     "presetLast3days": "Ultimi 3 giorni",
@@ -158,6 +170,10 @@
     "title": "Aggiungi un feed RSS",
     "url": "URL",
     "placeholder": "https://example.com/rss",
+    "folder": "Cartella",
+    "folderNone": "— Nessuna —",
+    "folderNew": "+ Nuova cartella…",
+    "folderNamePlaceholder": "Nome cartella",
     "cancel": "Annulla",
     "submit": "Aggiungi",
     "submitting": "Aggiungo…"

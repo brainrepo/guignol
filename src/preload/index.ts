@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from 'electron'
-import type { AppSettings, Article, ArticleMeta, DigestDoc, Feed, FetchResult, Highlight, HighlightDoc, LogEntry } from '../shared/types.js'
+import type { AppSettings, Article, ArticleMeta, DigestDoc, DigestScope, Feed, FetchResult, Highlight, HighlightDoc, LogEntry } from '../shared/types.js'
 
 const api = {
   settings: {
@@ -13,7 +13,11 @@ const api = {
     list: (): Promise<Feed[]> => ipcRenderer.invoke('feeds:list'),
     add: (url: string): Promise<Feed> => ipcRenderer.invoke('feeds:add', url),
     remove: (url: string): Promise<void> => ipcRenderer.invoke('feeds:remove', url),
-    refresh: (): Promise<FetchResult[]> => ipcRenderer.invoke('feeds:refresh')
+    refresh: (): Promise<FetchResult[]> => ipcRenderer.invoke('feeds:refresh'),
+    setFolder: (url: string, folder: string | null): Promise<void> =>
+      ipcRenderer.invoke('feeds:setFolder', url, folder),
+    renameFolder: (oldName: string, newName: string | null): Promise<void> =>
+      ipcRenderer.invoke('feeds:renameFolder', oldName, newName)
   },
   articles: {
     list: (feedSlug?: string): Promise<ArticleMeta[]> =>
@@ -42,8 +46,8 @@ const api = {
   },
   digests: {
     listAll: (): Promise<DigestDoc[]> => ipcRenderer.invoke('digests:listAll'),
-    create: (fromISO: string): Promise<DigestDoc> =>
-      ipcRenderer.invoke('digests:create', fromISO)
+    create: (fromISO: string, scope?: DigestScope): Promise<DigestDoc> =>
+      ipcRenderer.invoke('digests:create', fromISO, scope)
   },
   highlights: {
     listAll: (): Promise<HighlightDoc[]> => ipcRenderer.invoke('highlights:listAll'),

@@ -27,6 +27,12 @@
     "digests": "Digest",
     "feeds": "Feeds",
     "all": "Alle",
+    "uncategorized": "Ohne Ordner",
+    "newFolder": "Neuer Ordner",
+    "newFolderPrompt": "Ordnername:",
+    "renameFolder": "Ordner umbenennen",
+    "deleteFolder": "Ordner löschen",
+    "confirmDeleteFolder": "Ordner „{{name}}\" löschen? Enthaltene Feeds wandern nach „Ohne Ordner\".",
     "confirmRemove": "Diesen Feed entfernen? (Artikel auf der Festplatte bleiben erhalten)"
   },
   "articleList": {
@@ -143,6 +149,12 @@
   "createDigest": {
     "label": "Neuer Digest",
     "title": "Ungelesene Artikel zusammenfassen",
+    "scopeLabel": "Bereich",
+    "scopeAll": "Alle",
+    "scopeFolder": "Ordner",
+    "scopeFeed": "Feed",
+    "scopePickFolder": "Ordner auswählen…",
+    "scopePickFeed": "Feed auswählen…",
     "fromDate": "Ab Datum",
     "presetLast24h": "Letzte 24 Stunden",
     "presetLast3days": "Letzte 3 Tage",
@@ -158,6 +170,10 @@
     "title": "Einen RSS-Feed hinzufügen",
     "url": "URL",
     "placeholder": "https://example.com/rss",
+    "folder": "Ordner",
+    "folderNone": "— Keiner —",
+    "folderNew": "+ Neuer Ordner…",
+    "folderNamePlaceholder": "Ordnername",
     "cancel": "Abbrechen",
     "submit": "Hinzufügen",
     "submitting": "Hinzufügen…"

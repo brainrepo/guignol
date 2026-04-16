@@ -1,30 +1,44 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import type { Feed } from '../../../shared/types'
 
 interface Props {
   open: boolean
   onClose: () => void
   onAdded: () => void
+  feeds: Feed[]
 }
 
-export default function AddFeedModal({ open, onClose, onAdded }: Props): JSX.Element | null {
+const NEW_FOLDER = '__new__'
+
+export default function AddFeedModal({ open, onClose, onAdded, feeds }: Props): JSX.Element | null {
   const { t } = useTranslation()
   const [url, setUrl] = useState('')
+  const [folderChoice, setFolderChoice] = useState('')
+  const [newFolder, setNewFolder] = useState('')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+
+  const folders = useMemo(() => {
+    const set = new Set<string>()
+    for (const f of feeds) if (f.folder) set.add(f.folder)
+    return Array.from(set).sort((a, b) => a.localeCompare(b))
+  }, [feeds])
 
   useEffect(() => {
     if (!open) return
     const onKey = (e: KeyboardEvent): void => { if (e.key === 'Escape') onClose() }
     window.addEventListener('keydown', onKey)
-    const t = window.setTimeout(() => inputRef.current?.focus(), 20)
-    return () => { window.removeEventListener('keydown', onKey); window.clearTimeout(t) }
+    const id = window.setTimeout(() => inputRef.current?.focus(), 20)
+    return () => { window.removeEventListener('keydown', onKey); window.clearTimeout(id) }
   }, [open, onClose])
 
   useEffect(() => {
     if (!open) {
       setUrl('')
+      setFolderChoice('')
+      setNewFolder('')
       setError(null)
       setBusy(false)
     }
@@ -32,13 +46,25 @@ export default function AddFeedModal({ open, onClose, onAdded }: Props): JSX.Ele
 
   if (!open) return null
 
+  const resolveFolder = (): string | null => {
+    if (folderChoice === NEW_FOLDER) {
+      const trimmed = newFolder.trim()
+      return trimmed.length > 0 ? trimmed : null
+    }
+    return folderChoice.length > 0 ? folderChoice : null
+  }
+
   const submit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault()
     if (!url.trim()) return
     setBusy(true)
     setError(null)
     try {
-      await window.guignol.feeds.add(url.trim())
+      const feed = await window.guignol.feeds.add(url.trim())
+      const folder = resolveFolder()
+      if (folder) {
+        await window.guignol.feeds.setFolder(feed.url, folder)
+      }
       onAdded()
       onClose()
     } catch (err) {
@@ -65,19 +91,48 @@ export default function AddFeedModal({ open, onClose, onAdded }: Props): JSX.Ele
           </h2>
         </header>
 
-        <div className="px-6 py-5">
-          <label className="label block mb-2">{t('addFeed.url')}</label>
-          <input
-            ref={inputRef}
-            type="url"
-            placeholder={t('addFeed.placeholder')}
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-            disabled={busy}
-            className="w-full text-[15px] py-2 text-fg border-b border-fg-faint focus:border-accent transition-colors placeholder:text-fg-muted"
-          />
+        <div className="px-6 py-5 space-y-4">
+          <div>
+            <label className="label block mb-2">{t('addFeed.url')}</label>
+            <input
+              ref={inputRef}
+              type="url"
+              placeholder={t('addFeed.placeholder')}
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              disabled={busy}
+              className="w-full text-[15px] py-2 text-fg border-b border-fg-faint focus:border-accent transition-colors placeholder:text-fg-muted"
+            />
+          </div>
+
+          <div>
+            <label className="label block mb-2">{t('addFeed.folder')}</label>
+            <select
+              value={folderChoice}
+              onChange={(e) => setFolderChoice(e.target.value)}
+              disabled={busy}
+              className="w-full text-[14px] py-2 bg-transparent text-fg border-b border-fg-faint focus:border-accent transition-colors"
+            >
+              <option value="">{t('addFeed.folderNone')}</option>
+              {folders.map((name) => (
+                <option key={name} value={name}>{name}</option>
+              ))}
+              <option value={NEW_FOLDER}>{t('addFeed.folderNew')}</option>
+            </select>
+            {folderChoice === NEW_FOLDER && (
+              <input
+                type="text"
+                placeholder={t('addFeed.folderNamePlaceholder')}
+                value={newFolder}
+                onChange={(e) => setNewFolder(e.target.value)}
+                disabled={busy}
+                className="mt-3 w-full text-[14px] py-2 text-fg border-b border-fg-faint focus:border-accent transition-colors placeholder:text-fg-muted"
+              />
+            )}
+          </div>
+
           {error && (
-            <div className="mt-3 text-xs text-red-500 break-words">{error}</div>
+            <div className="text-xs text-red-500 break-words">{error}</div>
           )}
         </div>
 

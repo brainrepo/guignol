@@ -2,10 +2,15 @@ import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Plus } from 'lucide-react'
-import type { DigestDoc } from '../../../shared/types'
+import type { DigestDoc, Feed } from '../../../shared/types'
 import CreateDigestModal from '../components/CreateDigestModal'
+import ScopeBadge from '../components/ScopeBadge'
 
-export default function DigestsList(): JSX.Element {
+interface Props {
+  feeds: Feed[]
+}
+
+export default function DigestsList({ feeds }: Props): JSX.Element {
   const { t, i18n } = useTranslation()
   const [docs, setDocs] = useState<DigestDoc[]>([])
   const [loading, setLoading] = useState(true)
@@ -72,13 +77,16 @@ export default function DigestsList(): JSX.Element {
                 to={`/digests/${d.id}`}
                 className="block py-3.5 pl-6 pr-8 border-l-[3px] border-accent"
               >
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-[11px] uppercase tracking-caps font-semibold text-accent">
+                <div className="flex items-center justify-between mb-1 gap-2">
+                  <span className="text-[11px] uppercase tracking-caps font-semibold text-accent truncate">
                     {from} → {to}
                   </span>
-                  <span className="text-[10px] uppercase tracking-caps text-fg-muted">
-                    {d.articles.length} {t('digestsList.articleShort')}
-                  </span>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <ScopeBadge scope={d.scope} feeds={feeds} />
+                    <span className="text-[10px] uppercase tracking-caps text-fg-muted">
+                      {d.articles.length} {t('digestsList.articleShort')}
+                    </span>
+                  </div>
                 </div>
                 <div className="font-serif text-[15px] leading-snug text-fg line-clamp-2">
                   {preview || t('digestsList.empty_preview')}
@@ -98,6 +106,7 @@ export default function DigestsList(): JSX.Element {
         open={modalOpen}
         onClose={() => setModalOpen(false)}
         onCreated={() => { void reload() }}
+        feeds={feeds}
       />
     </div>
   )

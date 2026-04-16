@@ -2,13 +2,14 @@ import { access, mkdir, readFile, readdir, rename, writeFile } from 'node:fs/pro
 import { createHash } from 'node:crypto'
 import { join } from 'node:path'
 import matter from 'gray-matter'
-import type { DigestArticleRef, DigestDoc, Language } from '../shared/types.js'
+import type { DigestArticleRef, DigestDoc, DigestScope, Language } from '../shared/types.js'
 import { LANGUAGES } from '../shared/types.js'
 import { settings } from './settings.js'
 import { runClaude } from './ai/claude-cli.js'
 import { getAllMeta, upsertMeta } from './vault/index.js'
 import { readArticleFile } from './vault/reader.js'
 import { updateArticleFrontmatter } from './vault/writer.js'
+import { listFeeds } from './feeds/manager.js'
 import { log } from './log.js'
 
 function digestsRoot(): string {
@@ -84,6 +85,22 @@ function renderDigestBody(doc: DigestDoc, lang: Language): string {
   return lines.join('\n')
 }
 
+async function resolveScope(scope: DigestScope): Promise<Set<string> | null> {
+  if (scope.kind === 'all') return null
+  if (scope.kind === 'feed') return new Set([scope.slug])
+  const feeds = await listFeeds()
+  return new Set(feeds.filter((f) => f.folder === scope.name).map((f) => f.slug))
+}
+
+function parseScope(raw: unknown): DigestScope | undefined {
+  if (!raw || typeof raw !== 'object') return undefined
+  const r = raw as { kind?: unknown; name?: unknown; slug?: unknown }
+  if (r.kind === 'all') return { kind: 'all' }
+  if (r.kind === 'folder' && typeof r.name === 'string') return { kind: 'folder', name: r.name }
+  if (r.kind === 'feed' && typeof r.slug === 'string') return { kind: 'feed', slug: r.slug }
+  return undefined
+}
+
 async function writeDigestFile(doc: DigestDoc, lang: Language): Promise<string> {
   await mkdir(digestsRoot(), { recursive: true })
   const path = digestPath(doc.id, doc.from)
@@ -93,6 +110,7 @@ async function writeDigestFile(doc: DigestDoc, lang: Language): Promise<string> 
     from: doc.from,
     to: doc.to,
     summary: doc.summary,
+    scope: doc.scope,
     articles: doc.articles
   })
   const serialized = matter.stringify(renderDigestBody(doc, lang), fm)
@@ -102,13 +120,19 @@ async function writeDigestFile(doc: DigestDoc, lang: Language): Promise<string> 
   return path
 }
 
-export async function createDigest(fromISO: string): Promise<DigestDoc> {
+export async function createDigest(
+  fromISO: string,
+  scope: DigestScope = { kind: 'all' }
+): Promise<DigestDoc> {
   const from = new Date(fromISO)
   if (isNaN(from.getTime())) throw new Error('Invalid date')
 
   const toISO = new Date().toISOString()
+  const allowedFeedSlugs = await resolveScope(scope)
+
   const unread = getAllMeta().filter((m) => {
     if (m.read) return false
+    if (allowedFeedSlugs && !allowedFeedSlugs.has(m.feed)) return false
     const published = new Date(m.published).getTime()
     return published >= from.getTime() && published <= new Date(toISO).getTime()
   })
@@ -117,7 +141,7 @@ export async function createDigest(fromISO: string): Promise<DigestDoc> {
     throw new Error('No unread articles in the selected period')
   }
 
-  log.info('digests', `creating digest from ${fromISO}: ${unread.length} articles`)
+  log.info('digests', `creating digest from ${fromISO} scope=${scope.kind}: ${unread.length} articles`)
 
   // Build compact previews per article
   const entries = await Promise.all(unread.map(async (m) => {
@@ -155,6 +179,7 @@ export async function createDigest(fromISO: string): Promise<DigestDoc> {
     from: fromISO,
     to: toISO,
     summary,
+    scope: scope.kind === 'all' ? undefined : scope,
     articles
   }
 
@@ -192,6 +217,7 @@ export async function listDigests(): Promise<DigestDoc[]> {
         from: data.from ?? '',
         to: data.to ?? '',
         summary: data.summary ?? parsed.content,
+        scope: parseScope((data as { scope?: unknown }).scope),
         articles: data.articles
       })
     } catch {

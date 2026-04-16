@@ -6,6 +6,7 @@ import remarkGfm from 'remark-gfm'
 import { ArrowUpRight } from 'lucide-react'
 import type { DigestDoc, Feed } from '../../../shared/types'
 import { colorForFeed } from '../util/color'
+import ScopeBadge from '../components/ScopeBadge'
 
 interface Props { feeds: Feed[] }
 
@@ -71,6 +72,7 @@ export default function DigestDetail({ feeds }: Props): JSX.Element {
           {from} → {to}
         </h1>
         <div className="text-[13px] text-fg-muted flex flex-wrap items-center gap-x-3 gap-y-1">
+          <ScopeBadge scope={doc.scope} feeds={feeds} />
           <span>{t('digestDetail.articleCount', { count: doc.articles.length })}</span>
           <span className="w-1 h-1 rounded-full bg-fg-faint" aria-hidden />
           <time>{new Date(doc.created).toLocaleString(i18n.language)}</time>

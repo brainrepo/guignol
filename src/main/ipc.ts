@@ -1,7 +1,7 @@
 import { BrowserWindow, dialog, ipcMain, shell } from 'electron'
-import type { AppSettings, ArticleMeta } from '../shared/types.js'
+import type { AppSettings, ArticleMeta, DigestScope } from '../shared/types.js'
 import { settings } from './settings.js'
-import { addFeed, listFeeds, removeFeed } from './feeds/manager.js'
+import { addFeed, listFeeds, removeFeed, renameFolder, updateFeed } from './feeds/manager.js'
 import { probeFeed } from './feeds/fetcher.js'
 import { runNow, restart, schedulerEvents } from './feeds/scheduler.js'
 import { buildIndex, getAllMeta, getMeta, getMetaByFeed, upsertMeta } from './vault/index.js'
@@ -47,6 +47,12 @@ export function registerIpc(): void {
   })
   ipcMain.handle('feeds:remove', (_e, url: string) => removeFeed(url))
   ipcMain.handle('feeds:refresh', () => runNow())
+  ipcMain.handle('feeds:setFolder', (_e, url: string, folder: string | null) =>
+    updateFeed(url, { folder: folder ?? undefined })
+  )
+  ipcMain.handle('feeds:renameFolder', (_e, oldName: string, newName: string | null) =>
+    renameFolder(oldName, newName)
+  )
 
   // ===== Articles =====
   ipcMain.handle('articles:list', (_e, feedSlug?: string) => {
@@ -154,7 +160,9 @@ export function registerIpc(): void {
 
   // ===== Digests =====
   ipcMain.handle('digests:listAll', () => listDigests())
-  ipcMain.handle('digests:create', (_e, fromISO: string) => createDigest(fromISO))
+  ipcMain.handle('digests:create', (_e, fromISO: string, scope?: DigestScope) =>
+    createDigest(fromISO, scope)
+  )
 
   // ===== Log =====
   ipcMain.handle('log:history', () => log.history())

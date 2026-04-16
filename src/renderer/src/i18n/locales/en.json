@@ -27,6 +27,12 @@
     "digests": "Digest",
     "feeds": "Feeds",
     "all": "All",
+    "uncategorized": "Uncategorized",
+    "newFolder": "New folder",
+    "newFolderPrompt": "Folder name:",
+    "renameFolder": "Rename folder",
+    "deleteFolder": "Delete folder",
+    "confirmDeleteFolder": "Delete folder \"{{name}}\"? Feeds inside will move to Uncategorized.",
     "confirmRemove": "Remove this feed? (articles on disk will remain)"
   },
   "articleList": {
@@ -143,6 +149,12 @@
   "createDigest": {
     "label": "New digest",
     "title": "Summarize unread articles",
+    "scopeLabel": "Scope",
+    "scopeAll": "All",
+    "scopeFolder": "Folder",
+    "scopeFeed": "Feed",
+    "scopePickFolder": "Pick a folder…",
+    "scopePickFeed": "Pick a feed…",
     "fromDate": "From date",
     "presetLast24h": "Last 24 hours",
     "presetLast3days": "Last 3 days",
@@ -158,6 +170,10 @@
     "title": "Add an RSS feed",
     "url": "URL",
     "placeholder": "https://example.com/rss",
+    "folder": "Folder",
+    "folderNone": "— None —",
+    "folderNew": "+ New folder…",
+    "folderNamePlaceholder": "Folder name",
     "cancel": "Cancel",
     "submit": "Add",
     "submitting": "Adding…"

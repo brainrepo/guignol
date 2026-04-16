@@ -178,7 +178,7 @@ export default function App(): JSX.Element {
           </div>
         )}
         {onDigestsRoute ? (
-          <DigestsList />
+          <DigestsList feeds={feeds} />
         ) : (
           <ArticleList articles={visibleArticles} feeds={feeds} />
         )}
@@ -205,6 +205,7 @@ export default function App(): JSX.Element {
         open={addFeedOpen}
         onClose={() => setAddFeedOpen(false)}
         onAdded={reload}
+        feeds={feeds}
       />
     </div>
   )
