@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Guignol — an RSS reader that writes to your markdown vault</title>
-  <meta name="description" content="Guignol is a free, local-first RSS reader for macOS. Every article, highlight, and AI-generated digest is saved as plain markdown in a folder you own — ready for Claude Code, Obsidian, or any tool that reads text.">
+  <meta name="description" content="Guignol is a free, local-first RSS reader for macOS. Every article, highlight, and AI-generated digest is saved as plain markdown in a folder you own — ready for Claude Code, Codex, Obsidian, or any tool that reads text.">
 
   <link rel="icon" type="image/png" href="assets/icon.png">
   <link rel="apple-touch-icon" href="assets/icon.png">
@@ -41,7 +41,7 @@
         <a href="#folders">Folders</a>
         <a href="#reading">Reading</a>
         <a href="#digests">Digests</a>
-        <a href="#claude">Claude</a>
+        <a href="#claude">AI</a>
         <a href="#download">Download</a>
       </nav>
     </div>
@@ -67,7 +67,7 @@
       <p class="lede">
         Guignol is a free RSS reader that stores every article, highlight,
         and AI-generated digest as plain text in a folder you own —
-        ready for Claude Code, Obsidian, or any tool that speaks markdown.
+        ready for Claude Code, Codex, Obsidian, or any tool that speaks markdown.
         Organize feeds into folders by drag-and-drop, and scope each digest
         to the feeds that matter today.
       </p>
@@ -109,7 +109,7 @@
       <figure class="col-visual shot-frame">
         <img
           src="assets/screenshot/settings.png"
-          alt="Guignol Settings: three configurable folder paths for the vault, highlights, and digests, plus theme, language, polling interval, and a Claude CLI binary field."
+          alt="Guignol Settings: three configurable folder paths for the vault, highlights, and digests, plus theme, language, polling interval, an AI provider picker, and binary path fields for Claude CLI and Codex CLI."
           loading="lazy"
           decoding="async">
       </figure>
@@ -232,7 +232,7 @@
       <p class="label">05 — Digests</p>
       <h2 class="h2">Your week, read for you.</h2>
       <p class="lede">
-        Claude reads what you saved and writes a digest every day, week,
+        Your AI reads what you saved and writes a digest every day, week,
         or month. Not a summary — a digest. Themes. Through-lines. What repeated.
       </p>
 
@@ -297,33 +297,36 @@
     </div>
   </section>
 
-  <!-- 05 — Bring your own Claude .............................................. -->
+  <!-- 06 — Bring your own AI .................................................. -->
   <!--
     The architectural story. Two messages folded into one section:
-      (1) Guignol's AI features are powered by the user's locally-installed
-          Claude Code — no embedded API key, no token meter, no Guignol
-          server. This is why it can be free.
+      (1) Guignol's AI features are powered by a CLI the user already has
+          installed — Claude Code or Codex — called as a subprocess. No
+          embedded API key, no token meter, no Guignol server. This is
+          why it can be free.
       (2) Every highlight is a file in ~/Guignol/highlights/ — so the
           terminal demo cd's straight into that folder to make the point.
   -->
   <section id="claude" class="section section-dark">
     <div class="container two-col">
       <div class="col-text">
-        <p class="label">06 — Bring your own Claude</p>
-        <h2 class="h2">No API key.<br>No subscription.<br><em>Your</em> Claude. Your terms.</h2>
+        <p class="label">06 — Bring your own AI</p>
+        <h2 class="h2">No API key.<br>No subscription.<br><em>Your</em> AI. Your terms.</h2>
         <p class="body">
           Every AI feature in Guignol — article summaries, daily,
           weekly, and monthly digests, anything we add later —
-          runs through the <code>claude</code> CLI installed on your
-          Mac. There is no embedded model. No Guignol API key.
-          No token meter. You install Claude Code, sign in once, and
-          Guignol borrows your session. Your prompts never touch a
-          Guignol server, because there isn't one.
+          runs through an AI CLI you already have installed on your
+          Mac. Pick <code>claude</code> or <code>codex</code> in
+          Settings; Guignol calls it as a subprocess and parses the
+          response. There is no embedded model. No Guignol API key.
+          No token meter. You sign in to Claude Code or Codex once,
+          and Guignol borrows your session. Your prompts never touch
+          a Guignol server, because there isn't one.
         </p>
         <ul class="bullets">
-          <li>Powered by <a href="#" rel="noopener">Claude Code</a> on your Mac, called as a subprocess.</li>
-          <li>Set the binary path in <strong>Settings → Binary Claude CLI</strong>.</li>
-          <li>And of course — once it's all markdown, you can run Claude on the folder yourself.</li>
+          <li>Powered by the AI CLI of your choice — <a href="#" rel="noopener">Claude Code</a> or <a href="#" rel="noopener">Codex</a> — called as a subprocess on your Mac.</li>
+          <li>Switch providers any time in <strong>Settings → AI Provider</strong>. Each has its own configurable binary path.</li>
+          <li>And of course — once it's all markdown, you can run any AI on the folder yourself.</li>
         </ul>
       </div>
       <div class="col-visual">
