@@ -384,17 +384,22 @@ Two threads keep returning across what you marked:
       <p class="lede">macOS 12 Monterey or later. Signed and notarized.</p>
 
       <div class="download-row">
-        <a class="btn btn-primary btn-lg"
+        <a id="download-arm64"
+           class="btn btn-primary btn-lg"
            href="https://github.com/brainrepo/guignol/releases/latest"
+           data-asset-suffix="arm64.dmg"
            rel="noopener">
           Download for Apple Silicon
         </a>
-        <a class="btn btn-ghost btn-lg"
+        <a id="download-x64"
+           class="btn btn-ghost btn-lg"
            href="https://github.com/brainrepo/guignol/releases/latest"
+           data-asset-suffix="x64.dmg"
            rel="noopener">
           Download for Intel
         </a>
       </div>
+      <p id="download-version" class="tiny" aria-live="polite"></p>
 
       <p class="download-meta-row">
         <span><strong>Apple Silicon</strong> · M1, M2, M3, M4 Macs</span>
@@ -428,6 +433,36 @@ Two threads keep returning across what you marked:
       </nav>
     </div>
   </footer>
+
+  <script>
+    // Rewrite the download buttons to point at the latest release's DMG assets.
+    // Falls back silently to /releases/latest if the API is unreachable.
+    (function () {
+      var API = 'https://api.github.com/repos/brainrepo/guignol/releases/latest'
+      fetch(API, { headers: { Accept: 'application/vnd.github+json' } })
+        .then(function (r) { if (!r.ok) throw new Error('status ' + r.status); return r.json() })
+        .then(function (release) {
+          var assets = (release && release.assets) || []
+          var buttons = document.querySelectorAll('a[data-asset-suffix]')
+          buttons.forEach(function (a) {
+            var suffix = a.getAttribute('data-asset-suffix')
+            var match = assets.find(function (x) {
+              return typeof x.name === 'string' && x.name.toLowerCase().endsWith(suffix.toLowerCase())
+            })
+            if (match && match.browser_download_url) {
+              a.setAttribute('href', match.browser_download_url)
+              a.setAttribute('download', match.name)
+            }
+          })
+          var tag = document.getElementById('download-version')
+          if (tag && release && release.tag_name) {
+            tag.textContent = 'Latest: ' + release.tag_name +
+              (release.published_at ? ' · ' + new Date(release.published_at).toLocaleDateString() : '')
+          }
+        })
+        .catch(function () { /* keep fallback hrefs pointing at /releases/latest */ })
+    })()
+  </script>
 
 </body>
 </html>
