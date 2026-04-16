@@ -1,0 +1,158 @@
+{
+  "common": {
+    "loading": "Loading…",
+    "cancel": "Cancel",
+    "remove": "Remove",
+    "close": "Close",
+    "browse": "Browse…",
+    "notFound": "Not found"
+  },
+  "app": {
+    "addFeed": "Add feed",
+    "addFeedTooltip": "Add feed (⌘N)",
+    "hideSidebar": "Hide sidebar",
+    "showSidebar": "Show sidebar",
+    "hideSidebarTooltip": "Hide sidebar (⌘\\)",
+    "showSidebarTooltip": "Show sidebar (⌘\\)",
+    "resizeSidebar": "Resize sidebar",
+    "resizeArticleList": "Resize article list",
+    "refresh": "Refresh",
+    "settings": "Settings",
+    "selectArticle": "Select an article to read",
+    "articleCountUnread": "{{unread}} unread · {{total}} articles",
+    "articleCount": "{{total}} articles"
+  },
+  "feedList": {
+    "highlights": "Highlights",
+    "digests": "Digest",
+    "feeds": "Feeds",
+    "all": "All",
+    "confirmRemove": "Remove this feed? (articles on disk will remain)"
+  },
+  "articleList": {
+    "empty": "No articles. Add a feed or wait for the next refresh."
+  },
+  "articleDetail": {
+    "loading": "Loading…",
+    "notFound": "Article not found",
+    "original": "Original",
+    "save": "Save",
+    "saved": "Saved",
+    "highlights": "Highlights",
+    "summaryAi": "AI Summary",
+    "regenerate": "Regenerate",
+    "generating": "Generating…",
+    "summaryHeading": "Summary",
+    "generatedAt": "generated on {{date}}",
+    "highlightCount_one": "{{count}} highlight",
+    "highlightCount_other": "{{count}} highlights",
+    "highlightAction": "Highlight",
+    "removeHighlight": "Remove highlight",
+    "removeHighlightAria": "Remove highlight",
+    "scrollToHighlight": "Scroll to this passage",
+    "drawerEmpty": "Select text in the article and click Highlight to add one.",
+    "highlightCountLabel_one": "{{count}} highlight",
+    "highlightCountLabel_other": "{{count}} highlights"
+  },
+  "settings": {
+    "title": "Settings",
+    "theme": {
+      "label": "Theme",
+      "system": "System",
+      "systemHint": "follows macOS",
+      "light": "Light",
+      "lightHint": "light cold",
+      "dark": "Dark",
+      "darkHint": "dark cold"
+    },
+    "language": {
+      "label": "Language",
+      "hint": "Changes the interface language and the language of AI-generated summaries and digests."
+    },
+    "vaultPath": {
+      "label": "Vault path",
+      "hint": "Restart the app after changing the path. Existing articles stay where they are."
+    },
+    "highlightsPath": {
+      "label": "Highlights path",
+      "hint": "Directory where highlights are saved. One markdown file per article, mirroring the vault structure."
+    },
+    "digestsPath": {
+      "label": "Digests path",
+      "hint": "Directory where AI-generated digests are saved. One markdown file per digest."
+    },
+    "polling": {
+      "label": "Polling (minutes)"
+    },
+    "notifications": {
+      "label": "Desktop notifications for new articles"
+    },
+    "claudeBinary": {
+      "label": "Claude CLI binary",
+      "hintPrefix": "Default:",
+      "hintSuffix": "Use an absolute path if needed, e.g."
+    },
+    "opml": {
+      "title": "OPML",
+      "import": "Import OPML…",
+      "export": "Export OPML…",
+      "importing": "Importing…",
+      "imported": "Imported {{added}} new feeds ({{skipped}} already present, {{errors}} errors)",
+      "exported": "Exported to {{path}}",
+      "cancelled": "Cancelled"
+    }
+  },
+  "highlights": {
+    "title": "Highlights",
+    "heading": "All highlights",
+    "count_one": "{{count}} highlight",
+    "count_other": "{{count}} highlights",
+    "filtered": "{{count}} filtered",
+    "searchPlaceholder": "Search text or title…",
+    "allFeeds": "All",
+    "emptyAll": "No highlights yet. Open an article, select some text and click Highlight.",
+    "emptyFiltered": "No results for the current filter."
+  },
+  "digestsList": {
+    "heading": "Digests",
+    "newButton": "New",
+    "count_one": "{{count}} digest",
+    "count_other": "{{count}} digests",
+    "empty": "No digests yet. Click New to create one.",
+    "articleShort": "art.",
+    "empty_preview": "(empty)"
+  },
+  "digestDetail": {
+    "label": "Digest",
+    "selectOne": "Select a digest to read",
+    "loading": "Loading…",
+    "notFound": "Digest not found",
+    "articleCount_one": "{{count}} article",
+    "articleCount_other": "{{count}} articles",
+    "includedHeading": "Included articles — {{count}}",
+    "openInGuignol": "Open article in Guignol",
+    "openExternal": "Open external link"
+  },
+  "createDigest": {
+    "label": "New digest",
+    "title": "Summarize unread articles",
+    "fromDate": "From date",
+    "presetLast24h": "Last 24 hours",
+    "presetLast3days": "Last 3 days",
+    "presetLastWeek": "Last week",
+    "presetLast30days": "Last 30 days",
+    "busy": "Claude is reading and summarizing… this may take up to a minute.",
+    "cancel": "Cancel",
+    "submit": "Create digest",
+    "generating": "Generating…"
+  },
+  "addFeed": {
+    "label": "New feed",
+    "title": "Add an RSS feed",
+    "url": "URL",
+    "placeholder": "https://example.com/rss",
+    "cancel": "Cancel",
+    "submit": "Add",
+    "submitting": "Adding…"
+  }
+}

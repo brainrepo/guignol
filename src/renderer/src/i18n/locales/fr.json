@@ -1,0 +1,158 @@
+{
+  "common": {
+    "loading": "Chargement…",
+    "cancel": "Annuler",
+    "remove": "Supprimer",
+    "close": "Fermer",
+    "browse": "Parcourir…",
+    "notFound": "Introuvable"
+  },
+  "app": {
+    "addFeed": "Ajouter un flux",
+    "addFeedTooltip": "Ajouter un flux (⌘N)",
+    "hideSidebar": "Masquer la barre latérale",
+    "showSidebar": "Afficher la barre latérale",
+    "hideSidebarTooltip": "Masquer la barre latérale (⌘\\)",
+    "showSidebarTooltip": "Afficher la barre latérale (⌘\\)",
+    "resizeSidebar": "Redimensionner la barre latérale",
+    "resizeArticleList": "Redimensionner la liste d'articles",
+    "refresh": "Actualiser",
+    "settings": "Paramètres",
+    "selectArticle": "Sélectionnez un article pour le lire",
+    "articleCountUnread": "{{unread}} non lus · {{total}} articles",
+    "articleCount": "{{total}} articles"
+  },
+  "feedList": {
+    "highlights": "Surlignages",
+    "digests": "Digest",
+    "feeds": "Flux",
+    "all": "Tous",
+    "confirmRemove": "Supprimer ce flux ? (les articles sur le disque sont conservés)"
+  },
+  "articleList": {
+    "empty": "Aucun article. Ajoutez un flux ou attendez la prochaine actualisation."
+  },
+  "articleDetail": {
+    "loading": "Chargement…",
+    "notFound": "Article introuvable",
+    "original": "Original",
+    "save": "Enregistrer",
+    "saved": "Enregistré",
+    "highlights": "Surlignages",
+    "summaryAi": "Résumé IA",
+    "regenerate": "Régénérer",
+    "generating": "Génération…",
+    "summaryHeading": "Résumé",
+    "generatedAt": "généré le {{date}}",
+    "highlightCount_one": "{{count}} surlignage",
+    "highlightCount_other": "{{count}} surlignages",
+    "highlightAction": "Surligner",
+    "removeHighlight": "Retirer le surlignage",
+    "removeHighlightAria": "Retirer le surlignage",
+    "scrollToHighlight": "Aller au passage",
+    "drawerEmpty": "Sélectionnez du texte dans l'article et cliquez sur Surligner pour l'ajouter.",
+    "highlightCountLabel_one": "{{count}} surlignage",
+    "highlightCountLabel_other": "{{count}} surlignages"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "theme": {
+      "label": "Thème",
+      "system": "Système",
+      "systemHint": "suit macOS",
+      "light": "Clair",
+      "lightHint": "light cold",
+      "dark": "Sombre",
+      "darkHint": "dark cold"
+    },
+    "language": {
+      "label": "Langue",
+      "hint": "Change la langue de l'interface et la langue des résumés et digests générés par l'IA."
+    },
+    "vaultPath": {
+      "label": "Chemin du vault",
+      "hint": "Redémarrez l'app après avoir changé le chemin. Les articles existants restent en place."
+    },
+    "highlightsPath": {
+      "label": "Chemin des surlignages",
+      "hint": "Répertoire où enregistrer les surlignages. Un fichier markdown par article, reflétant la structure du vault."
+    },
+    "digestsPath": {
+      "label": "Chemin des digests",
+      "hint": "Répertoire où enregistrer les digests générés par l'IA. Un fichier markdown par digest."
+    },
+    "polling": {
+      "label": "Polling (minutes)"
+    },
+    "notifications": {
+      "label": "Notifications bureau pour les nouveaux articles"
+    },
+    "claudeBinary": {
+      "label": "Binaire Claude CLI",
+      "hintPrefix": "Par défaut :",
+      "hintSuffix": "Utilisez un chemin absolu si nécessaire, ex."
+    },
+    "opml": {
+      "title": "OPML",
+      "import": "Importer OPML…",
+      "export": "Exporter OPML…",
+      "importing": "Import en cours…",
+      "imported": "Importés {{added}} nouveaux flux ({{skipped}} déjà présents, {{errors}} erreurs)",
+      "exported": "Exporté vers {{path}}",
+      "cancelled": "Annulé"
+    }
+  },
+  "highlights": {
+    "title": "Surlignages",
+    "heading": "Tous les surlignages",
+    "count_one": "{{count}} surlignage",
+    "count_other": "{{count}} surlignages",
+    "filtered": "{{count}} filtrés",
+    "searchPlaceholder": "Rechercher dans le texte ou le titre…",
+    "allFeeds": "Tous",
+    "emptyAll": "Aucun surlignage. Ouvrez un article, sélectionnez du texte et cliquez sur Surligner.",
+    "emptyFiltered": "Aucun résultat pour le filtre actuel."
+  },
+  "digestsList": {
+    "heading": "Digests",
+    "newButton": "Nouveau",
+    "count_one": "{{count}} digest",
+    "count_other": "{{count}} digests",
+    "empty": "Aucun digest. Cliquez sur Nouveau pour en créer un.",
+    "articleShort": "art.",
+    "empty_preview": "(vide)"
+  },
+  "digestDetail": {
+    "label": "Digest",
+    "selectOne": "Sélectionnez un digest pour le lire",
+    "loading": "Chargement…",
+    "notFound": "Digest introuvable",
+    "articleCount_one": "{{count}} article",
+    "articleCount_other": "{{count}} articles",
+    "includedHeading": "Articles inclus — {{count}}",
+    "openInGuignol": "Ouvrir l'article dans Guignol",
+    "openExternal": "Ouvrir le lien externe"
+  },
+  "createDigest": {
+    "label": "Nouveau digest",
+    "title": "Résumer les articles non lus",
+    "fromDate": "À partir du",
+    "presetLast24h": "Dernières 24 heures",
+    "presetLast3days": "3 derniers jours",
+    "presetLastWeek": "Semaine dernière",
+    "presetLast30days": "30 derniers jours",
+    "busy": "Claude lit et résume… cela peut prendre jusqu'à une minute.",
+    "cancel": "Annuler",
+    "submit": "Créer un digest",
+    "generating": "Génération…"
+  },
+  "addFeed": {
+    "label": "Nouveau flux",
+    "title": "Ajouter un flux RSS",
+    "url": "URL",
+    "placeholder": "https://example.com/rss",
+    "cancel": "Annuler",
+    "submit": "Ajouter",
+    "submitting": "Ajout…"
+  }
+}

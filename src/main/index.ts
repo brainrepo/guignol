@@ -32,6 +32,14 @@ function createWindow(): BrowserWindow {
     return { action: 'deny' }
   })
 
+  win.webContents.on('will-navigate', (e, url) => {
+    const currentUrl = win.webContents.getURL()
+    // permetti hash-change di react-router, intercetta tutto il resto (link http/https esterni)
+    if (url.split('#')[0] === currentUrl.split('#')[0]) return
+    e.preventDefault()
+    void shell.openExternal(url)
+  })
+
   const url = process.env['ELECTRON_RENDERER_URL']
   if (url) {
     void win.loadURL(url)

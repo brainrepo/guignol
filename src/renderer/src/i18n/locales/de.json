@@ -1,0 +1,158 @@
+{
+  "common": {
+    "loading": "Wird geladen…",
+    "cancel": "Abbrechen",
+    "remove": "Entfernen",
+    "close": "Schließen",
+    "browse": "Durchsuchen…",
+    "notFound": "Nicht gefunden"
+  },
+  "app": {
+    "addFeed": "Feed hinzufügen",
+    "addFeedTooltip": "Feed hinzufügen (⌘N)",
+    "hideSidebar": "Seitenleiste ausblenden",
+    "showSidebar": "Seitenleiste einblenden",
+    "hideSidebarTooltip": "Seitenleiste ausblenden (⌘\\)",
+    "showSidebarTooltip": "Seitenleiste einblenden (⌘\\)",
+    "resizeSidebar": "Seitenleiste anpassen",
+    "resizeArticleList": "Artikelliste anpassen",
+    "refresh": "Aktualisieren",
+    "settings": "Einstellungen",
+    "selectArticle": "Wähle einen Artikel zum Lesen",
+    "articleCountUnread": "{{unread}} ungelesen · {{total}} Artikel",
+    "articleCount": "{{total}} Artikel"
+  },
+  "feedList": {
+    "highlights": "Markierungen",
+    "digests": "Digest",
+    "feeds": "Feeds",
+    "all": "Alle",
+    "confirmRemove": "Diesen Feed entfernen? (Artikel auf der Festplatte bleiben erhalten)"
+  },
+  "articleList": {
+    "empty": "Keine Artikel. Füge einen Feed hinzu oder warte auf die nächste Aktualisierung."
+  },
+  "articleDetail": {
+    "loading": "Wird geladen…",
+    "notFound": "Artikel nicht gefunden",
+    "original": "Original",
+    "save": "Speichern",
+    "saved": "Gespeichert",
+    "highlights": "Markierungen",
+    "summaryAi": "KI-Zusammenfassung",
+    "regenerate": "Neu erzeugen",
+    "generating": "Wird erstellt…",
+    "summaryHeading": "Zusammenfassung",
+    "generatedAt": "erstellt am {{date}}",
+    "highlightCount_one": "{{count}} Markierung",
+    "highlightCount_other": "{{count}} Markierungen",
+    "highlightAction": "Markieren",
+    "removeHighlight": "Markierung entfernen",
+    "removeHighlightAria": "Markierung entfernen",
+    "scrollToHighlight": "Zur Stelle scrollen",
+    "drawerEmpty": "Text im Artikel markieren und auf Markieren klicken, um ihn hinzuzufügen.",
+    "highlightCountLabel_one": "{{count}} Markierung",
+    "highlightCountLabel_other": "{{count}} Markierungen"
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "theme": {
+      "label": "Design",
+      "system": "System",
+      "systemHint": "folgt macOS",
+      "light": "Hell",
+      "lightHint": "light cold",
+      "dark": "Dunkel",
+      "darkHint": "dark cold"
+    },
+    "language": {
+      "label": "Sprache",
+      "hint": "Ändert die Sprache der Oberfläche und der von der KI erzeugten Zusammenfassungen und Digests."
+    },
+    "vaultPath": {
+      "label": "Vault-Pfad",
+      "hint": "Starte die App nach einer Änderung des Pfads neu. Bestehende Artikel bleiben, wo sie sind."
+    },
+    "highlightsPath": {
+      "label": "Markierungen-Pfad",
+      "hint": "Verzeichnis für die Markierungen. Eine Markdown-Datei pro Artikel, spiegelt die Vault-Struktur."
+    },
+    "digestsPath": {
+      "label": "Digest-Pfad",
+      "hint": "Verzeichnis für die von der KI erzeugten Digests. Eine Markdown-Datei pro Digest."
+    },
+    "polling": {
+      "label": "Polling (Minuten)"
+    },
+    "notifications": {
+      "label": "Desktop-Benachrichtigungen für neue Artikel"
+    },
+    "claudeBinary": {
+      "label": "Claude-CLI-Binary",
+      "hintPrefix": "Standard:",
+      "hintSuffix": "Bei Bedarf absoluten Pfad verwenden, z. B."
+    },
+    "opml": {
+      "title": "OPML",
+      "import": "OPML importieren…",
+      "export": "OPML exportieren…",
+      "importing": "Import läuft…",
+      "imported": "{{added}} neue Feeds importiert ({{skipped}} bereits vorhanden, {{errors}} Fehler)",
+      "exported": "Exportiert nach {{path}}",
+      "cancelled": "Abgebrochen"
+    }
+  },
+  "highlights": {
+    "title": "Markierungen",
+    "heading": "Alle Markierungen",
+    "count_one": "{{count}} Markierung",
+    "count_other": "{{count}} Markierungen",
+    "filtered": "{{count}} gefiltert",
+    "searchPlaceholder": "In Text oder Titel suchen…",
+    "allFeeds": "Alle",
+    "emptyAll": "Keine Markierungen. Öffne einen Artikel, markiere Text und klicke auf Markieren.",
+    "emptyFiltered": "Keine Ergebnisse für den aktuellen Filter."
+  },
+  "digestsList": {
+    "heading": "Digests",
+    "newButton": "Neu",
+    "count_one": "{{count}} Digest",
+    "count_other": "{{count}} Digests",
+    "empty": "Noch keine Digests. Klicke auf Neu, um einen zu erstellen.",
+    "articleShort": "Art.",
+    "empty_preview": "(leer)"
+  },
+  "digestDetail": {
+    "label": "Digest",
+    "selectOne": "Wähle einen Digest zum Lesen",
+    "loading": "Wird geladen…",
+    "notFound": "Digest nicht gefunden",
+    "articleCount_one": "{{count}} Artikel",
+    "articleCount_other": "{{count}} Artikel",
+    "includedHeading": "Enthaltene Artikel — {{count}}",
+    "openInGuignol": "Artikel in Guignol öffnen",
+    "openExternal": "Externen Link öffnen"
+  },
+  "createDigest": {
+    "label": "Neuer Digest",
+    "title": "Ungelesene Artikel zusammenfassen",
+    "fromDate": "Ab Datum",
+    "presetLast24h": "Letzte 24 Stunden",
+    "presetLast3days": "Letzte 3 Tage",
+    "presetLastWeek": "Letzte Woche",
+    "presetLast30days": "Letzte 30 Tage",
+    "busy": "Claude liest und fasst zusammen… das kann bis zu einer Minute dauern.",
+    "cancel": "Abbrechen",
+    "submit": "Digest erstellen",
+    "generating": "Wird erstellt…"
+  },
+  "addFeed": {
+    "label": "Neuer Feed",
+    "title": "Einen RSS-Feed hinzufügen",
+    "url": "URL",
+    "placeholder": "https://example.com/rss",
+    "cancel": "Abbrechen",
+    "submit": "Hinzufügen",
+    "submitting": "Hinzufügen…"
+  }
+}

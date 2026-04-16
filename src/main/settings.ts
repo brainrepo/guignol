@@ -6,10 +6,12 @@ import type { AppSettings } from '../shared/types.js'
 const defaults: AppSettings = {
   vaultPath: join(app.getPath('documents'), 'Guignol'),
   highlightsPath: join(app.getPath('documents'), 'Guignol-Highlights'),
+  digestsPath: join(app.getPath('documents'), 'Guignol-Digests'),
   pollingMinutes: 15,
   notificationsEnabled: true,
   claudeBinary: 'claude',
-  theme: 'system'
+  theme: 'system',
+  language: 'en'
 }
 
 const store = new Store<AppSettings>({

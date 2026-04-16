@@ -13,6 +13,7 @@ import { exportOpml } from './opml/export.js'
 import { notifyNewArticles } from './notifications.js'
 import { log } from './log.js'
 import { addHighlight, listAllHighlightDocs, listHighlights, removeHighlight } from './highlights.js'
+import { createDigest, listDigests } from './digests.js'
 
 export function registerIpc(): void {
   // ===== Settings =====
@@ -121,6 +122,10 @@ export function registerIpc(): void {
     if (!meta) throw new Error(`Article ${articleId} not found`)
     return await removeHighlight(meta, text)
   })
+
+  // ===== Digests =====
+  ipcMain.handle('digests:listAll', () => listDigests())
+  ipcMain.handle('digests:create', (_e, fromISO: string) => createDigest(fromISO))
 
   // ===== Log =====
   ipcMain.handle('log:history', () => log.history())

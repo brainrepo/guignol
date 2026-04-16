@@ -5,12 +5,41 @@ directories:
 files:
   - out/**/*
   - package.json
+  - assets/**
 asar: true
+
 mac:
   category: public.app-category.news
+  hardenedRuntime: true
+  gatekeeperAssess: false
+  entitlements: build/entitlements.mac.plist
+  entitlementsInherit: build/entitlements.mac.plist
+  notarize: true
   target:
-    - dmg
+    - target: dmg
+      arch:
+        - arm64
+        - x64
+    - target: zip
+      arch:
+        - arm64
+        - x64
+  artifactName: ${productName}-${version}-${arch}.${ext}
+
+dmg:
+  sign: false
+  writeUpdateInfo: true
+
 win:
   target: nsis
+  artifactName: ${productName}-${version}-${arch}.${ext}
+
 linux:
   target: AppImage
+  category: News
+  artifactName: ${productName}-${version}-${arch}.${ext}
+
+publish:
+  provider: github
+  owner: brainrepo
+  repo: guignol

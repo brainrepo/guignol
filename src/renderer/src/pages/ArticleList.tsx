@@ -1,4 +1,5 @@
 import { Link, useParams } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { Star } from 'lucide-react'
 import type { ArticleMeta, Feed } from '../../../shared/types'
 import { colorForFeed } from '../util/color'
@@ -9,6 +10,7 @@ interface Props {
 }
 
 export default function ArticleList({ articles, feeds }: Props): JSX.Element {
+  const { t, i18n } = useTranslation()
   const { id: activeId } = useParams()
   const sorted = [...articles].sort(
     (a, b) => new Date(b.published).getTime() - new Date(a.published).getTime()
@@ -17,7 +19,7 @@ export default function ArticleList({ articles, feeds }: Props): JSX.Element {
   if (sorted.length === 0) {
     return (
       <div className="py-16 px-10 text-center text-fg-muted font-serif italic text-[15px]">
-        Nessun articolo. Aggiungi un feed o attendi il prossimo refresh.
+        {t('articleList.empty')}
       </div>
     )
   }
@@ -64,11 +66,11 @@ export default function ArticleList({ articles, feeds }: Props): JSX.Element {
               </div>
               <div className="flex items-center gap-2 mt-1.5 text-[10px] uppercase tracking-caps text-fg-muted">
                 <span>
-                  {d.toLocaleDateString('it-IT', { day: 'numeric', month: 'short' })}
+                  {d.toLocaleDateString(i18n.language, { day: 'numeric', month: 'short' })}
                 </span>
                 <span className="opacity-50">·</span>
                 <span className="font-mono">
-                  {d.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })}
+                  {d.toLocaleTimeString(i18n.language, { hour: '2-digit', minute: '2-digit' })}
                 </span>
               </div>
               {a.summary && (

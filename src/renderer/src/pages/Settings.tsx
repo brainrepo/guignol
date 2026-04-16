@@ -1,17 +1,20 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Folder } from 'lucide-react'
-import type { AppSettings, Theme } from '../../../shared/types'
+import type { AppSettings, Language, Theme } from '../../../shared/types'
+import { LANGUAGES } from '../../../shared/types'
 
 interface Props { onChanged: () => void }
 
 export default function Settings({ onChanged }: Props): JSX.Element {
+  const { t } = useTranslation()
   const [settings, setSettings] = useState<AppSettings | null>(null)
   const [status, setStatus] = useState<string | null>(null)
 
   useEffect(() => { void window.guignol.settings.get().then(setSettings) }, [])
 
   if (!settings) return (
-    <div className="py-16 px-10 text-center text-fg-muted font-serif italic">Caricamento…</div>
+    <div className="py-16 px-10 text-center text-fg-muted font-serif italic">{t('common.loading')}</div>
   )
 
   const update = async (patch: Partial<AppSettings>): Promise<void> => {
@@ -21,21 +24,25 @@ export default function Settings({ onChanged }: Props): JSX.Element {
   }
 
   const importOpml = async (): Promise<void> => {
-    setStatus('Import in corso…')
+    setStatus(t('settings.opml.importing'))
     const r = await window.guignol.opml.import()
-    setStatus(r ? `Importati ${r.added} nuovi feed (${r.skipped} già presenti, ${r.errors.length} errori)` : 'Annullato')
+    setStatus(
+      r
+        ? t('settings.opml.imported', { added: r.added, skipped: r.skipped, errors: r.errors.length })
+        : t('settings.opml.cancelled')
+    )
     onChanged()
   }
 
   const exportOpml = async (): Promise<void> => {
     const path = await window.guignol.opml.export()
-    setStatus(path ? `Esportato in ${path}` : 'Annullato')
+    setStatus(path ? t('settings.opml.exported', { path }) : t('settings.opml.cancelled'))
   }
 
   const themes: { value: Theme; label: string; hint: string }[] = [
-    { value: 'system', label: 'Sistema', hint: 'segue macOS' },
-    { value: 'light', label: 'Chiaro', hint: 'light cold' },
-    { value: 'dark', label: 'Scuro', hint: 'dark cold' }
+    { value: 'system', label: t('settings.theme.system'), hint: t('settings.theme.systemHint') },
+    { value: 'light', label: t('settings.theme.light'), hint: t('settings.theme.lightHint') },
+    { value: 'dark', label: t('settings.theme.dark'), hint: t('settings.theme.darkHint') }
   ]
 
   const inputClass = 'mt-2 w-full text-sm py-1.5 text-fg border-b border-fg-faint focus:border-accent transition-colors placeholder:text-fg-muted normal-case tracking-normal font-normal'
@@ -44,10 +51,10 @@ export default function Settings({ onChanged }: Props): JSX.Element {
 
   return (
     <div className="max-w-[560px] px-14 pt-14 pb-20">
-      <h1 className="font-serif text-4xl font-normal tracking-tight m-0 mb-2">Settings</h1>
+      <h1 className="font-serif text-4xl font-normal tracking-tight m-0 mb-2">{t('settings.title')}</h1>
 
       <fieldset className="border-0 p-0 m-0 mb-9">
-        <legend className="label mb-3">Tema</legend>
+        <legend className="label mb-3">{t('settings.theme.label')}</legend>
         <div className="grid grid-cols-3 gap-3 max-w-[480px]">
           {themes.map((t) => (
             <button
@@ -75,22 +82,52 @@ export default function Settings({ onChanged }: Props): JSX.Element {
         </div>
       </fieldset>
 
+      <fieldset className="border-0 p-0 m-0 mb-9">
+        <legend className="label mb-3">{t('settings.language.label')}</legend>
+        <div className="flex flex-wrap gap-1.5">
+          {(Object.entries(LANGUAGES) as [Language, { label: string }][]).map(([code, meta]) => {
+            const active = settings.language === code
+            return (
+              <button
+                key={code}
+                type="button"
+                onClick={() => update({ language: code })}
+                aria-pressed={active}
+                className={`px-3 py-1.5 text-[13px] rounded-full border transition-colors ${active ? 'bg-accent text-bg border-accent' : 'text-fg-dim border-fg-faint hover:text-fg hover:bg-bg-hover'}`}
+              >
+                {meta.label}
+              </button>
+            )
+          })}
+        </div>
+        <small className="block mt-2 font-normal text-fg-muted normal-case tracking-normal text-xs">
+          {t('settings.language.hint')}
+        </small>
+      </fieldset>
+
       <PathField
-        label="Vault path"
-        hint="Riavvia l'app dopo aver cambiato il path. Gli articoli esistenti restano dove erano."
+        label={t('settings.vaultPath.label')}
+        hint={t('settings.vaultPath.hint')}
         value={settings.vaultPath}
         onPick={(p) => void update({ vaultPath: p })}
       />
 
       <PathField
-        label="Highlights path"
-        hint="Directory dove salvare le sottolineature. Un file markdown per articolo, struttura speculare al vault."
+        label={t('settings.highlightsPath.label')}
+        hint={t('settings.highlightsPath.hint')}
         value={settings.highlightsPath}
         onPick={(p) => void update({ highlightsPath: p })}
       />
 
+      <PathField
+        label={t('settings.digestsPath.label')}
+        hint={t('settings.digestsPath.hint')}
+        value={settings.digestsPath}
+        onPick={(p) => void update({ digestsPath: p })}
+      />
+
       <label className={labelClass}>
-        Polling (minuti)
+        {t('settings.polling.label')}
         <input
           type="number"
           min={1}
@@ -107,11 +144,11 @@ export default function Settings({ onChanged }: Props): JSX.Element {
           checked={settings.notificationsEnabled}
           onChange={(e) => update({ notificationsEnabled: e.target.checked })}
         />
-        Notifiche desktop su nuovi articoli
+        {t('settings.notifications.label')}
       </label>
 
       <label className={labelClass}>
-        Binary claude CLI
+        {t('settings.claudeBinary.label')}
         <input
           type="text"
           value={settings.claudeBinary}
@@ -120,14 +157,14 @@ export default function Settings({ onChanged }: Props): JSX.Element {
           className={inputClass}
         />
         <small className="block font-normal text-fg-muted mt-1.5 normal-case tracking-normal text-xs">
-          Default: <code>claude</code>. Usa path assoluto se necessario, es. <code>/opt/homebrew/bin/claude</code>.
+          {t('settings.claudeBinary.hintPrefix')} <code>claude</code>. {t('settings.claudeBinary.hintSuffix')} <code>/opt/homebrew/bin/claude</code>.
         </small>
       </label>
 
-      <h2 className="font-serif mt-12 text-[22px] font-normal">OPML</h2>
+      <h2 className="font-serif mt-12 text-[22px] font-normal">{t('settings.opml.title')}</h2>
       <div className="flex gap-1 mt-2">
-        <button onClick={importOpml} className={btn}>Importa OPML…</button>
-        <button onClick={exportOpml} className={btn}>Esporta OPML…</button>
+        <button onClick={importOpml} className={btn}>{t('settings.opml.import')}</button>
+        <button onClick={exportOpml} className={btn}>{t('settings.opml.export')}</button>
       </div>
 
       {status && (
@@ -150,6 +187,7 @@ function PathField({
   value: string
   onPick: (path: string) => void
 }): JSX.Element {
+  const { t } = useTranslation()
   const choose = async (): Promise<void> => {
     const picked = await window.guignol.settings.pickDirectory(value)
     if (picked) onPick(picked)
@@ -170,7 +208,7 @@ function PathField({
           className="inline-flex items-center gap-1.5 px-3 py-2 rounded-md border border-fg-faint text-[13px] text-fg-dim hover:text-fg hover:bg-bg-hover transition-colors"
         >
           <Folder size={14} strokeWidth={2} aria-hidden />
-          Sfoglia…
+          {t('common.browse')}
         </button>
       </div>
       <small className="block font-normal text-fg-muted mt-1.5 normal-case tracking-normal text-xs">

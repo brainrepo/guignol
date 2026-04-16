@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from 'electron'
-import type { AppSettings, Article, ArticleMeta, Feed, FetchResult, Highlight, HighlightDoc, LogEntry } from '../shared/types.js'
+import type { AppSettings, Article, ArticleMeta, DigestDoc, Feed, FetchResult, Highlight, HighlightDoc, LogEntry } from '../shared/types.js'
 
 const api = {
   settings: {
@@ -35,6 +35,11 @@ const api = {
   },
   vault: {
     rebuild: (): Promise<void> => ipcRenderer.invoke('vault:rebuild')
+  },
+  digests: {
+    listAll: (): Promise<DigestDoc[]> => ipcRenderer.invoke('digests:listAll'),
+    create: (fromISO: string): Promise<DigestDoc> =>
+      ipcRenderer.invoke('digests:create', fromISO)
   },
   highlights: {
     listAll: (): Promise<HighlightDoc[]> => ipcRenderer.invoke('highlights:listAll'),

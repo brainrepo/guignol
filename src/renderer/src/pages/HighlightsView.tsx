@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import type { Feed, HighlightDoc } from '../../../shared/types'
 import { colorForFeed } from '../util/color'
 
@@ -16,6 +17,7 @@ interface FlatEntry {
 }
 
 export default function HighlightsView({ feeds }: Props): JSX.Element {
+  const { t, i18n } = useTranslation()
   const [docs, setDocs] = useState<HighlightDoc[]>([])
   const [loading, setLoading] = useState(true)
   const [filterFeed, setFilterFeed] = useState<string | null>(null)
@@ -67,20 +69,20 @@ export default function HighlightsView({ feeds }: Props): JSX.Element {
   return (
     <div className="max-w-[760px] mx-auto px-14 pt-14 pb-20">
       <header className="mb-7">
-        <div className="label mb-1">Highlights</div>
+        <div className="label mb-1">{t('highlights.title')}</div>
         <h1 className="font-serif text-4xl font-normal tracking-tight m-0 mb-1.5 uppercase">
-          Tutte le sottolineature
+          {t('highlights.heading')}
         </h1>
         <div className="label">
-          {totalCount} {totalCount === 1 ? 'highlight' : 'highlights'}
-          {filtered.length !== totalCount && ` · ${filtered.length} filtrati`}
+          {t('highlights.count', { count: totalCount })}
+          {filtered.length !== totalCount && ` · ${t('highlights.filtered', { count: filtered.length })}`}
         </div>
       </header>
 
       <div className="flex flex-col gap-3.5 mb-8 pb-4 border-b border-fg-faint">
         <input
           type="text"
-          placeholder="Cerca nel testo o nel titolo…"
+          placeholder={t('highlights.searchPlaceholder')}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="text-sm py-1.5 text-fg border-b border-fg-faint focus:border-accent transition-colors placeholder:text-fg-muted"
@@ -90,7 +92,7 @@ export default function HighlightsView({ feeds }: Props): JSX.Element {
             onClick={() => setFilterFeed(null)}
             className={`${chipBase} ${filterFeed === null ? 'bg-bg-alt text-fg shadow-[inset_0_-2px_0] shadow-accent' : 'text-fg-dim hover:text-fg hover:bg-bg-hover'}`}
           >
-            Tutti
+            {t('highlights.allFeeds')}
           </button>
           {feedSlugs.map((slug) => {
             const active = filterFeed === slug
@@ -112,16 +114,16 @@ export default function HighlightsView({ feeds }: Props): JSX.Element {
       </div>
 
       {loading && (
-        <div className="py-16 text-center text-fg-muted font-serif italic">Caricamento…</div>
+        <div className="py-16 text-center text-fg-muted font-serif italic">{t('common.loading')}</div>
       )}
       {!loading && filtered.length === 0 && totalCount === 0 && (
         <div className="py-16 text-center text-fg-muted font-serif italic">
-          Nessuna sottolineatura. Apri un articolo, seleziona del testo e clicca <em>Highlight</em>.
+          {t('highlights.emptyAll')}
         </div>
       )}
       {!loading && filtered.length === 0 && totalCount > 0 && (
         <div className="py-16 text-center text-fg-muted font-serif italic">
-          Nessun risultato per il filtro attuale.
+          {t('highlights.emptyFiltered')}
         </div>
       )}
 
@@ -148,7 +150,7 @@ export default function HighlightsView({ feeds }: Props): JSX.Element {
                 <span className="text-fg-dim font-medium">{e.articleTitle}</span>
                 <span className="opacity-50">·</span>
                 <span className="font-mono tracking-wider">
-                  {new Date(e.createdAt).toLocaleString('it-IT', {
+                  {new Date(e.createdAt).toLocaleString(i18n.language, {
                     day: '2-digit', month: 'short', year: 'numeric',
                     hour: '2-digit', minute: '2-digit'
                   })}

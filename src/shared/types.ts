@@ -40,13 +40,25 @@ export interface ArticleMeta extends ArticleFrontmatter {
 
 export type Theme = 'light' | 'dark' | 'system'
 
+export type Language = 'en' | 'it' | 'es' | 'fr' | 'de'
+
+export const LANGUAGES: Record<Language, { label: string; promptName: string }> = {
+  en: { label: 'English', promptName: 'English' },
+  it: { label: 'Italiano', promptName: 'Italian' },
+  es: { label: 'Español', promptName: 'Spanish' },
+  fr: { label: 'Français', promptName: 'French' },
+  de: { label: 'Deutsch', promptName: 'German' }
+}
+
 export interface AppSettings {
   vaultPath: string
   highlightsPath: string
+  digestsPath: string
   pollingMinutes: number
   notificationsEnabled: boolean
   claudeBinary: string
   theme: Theme
+  language: Language
 }
 
 export interface Highlight {
@@ -63,6 +75,23 @@ export interface HighlightDoc {
   created: string
   updated: string
   highlights: Highlight[]
+}
+
+export interface DigestArticleRef {
+  id: string
+  title: string
+  feed: string
+  link: string
+  published: string
+}
+
+export interface DigestDoc {
+  id: string
+  created: string
+  from: string
+  to: string
+  summary: string
+  articles: DigestArticleRef[]
 }
 
 export interface FetchResult {

@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Guignol — an RSS reader that writes to your markdown vault</title>
+  <meta name="description" content="Guignol is a free, local-first RSS reader for macOS. Every article, highlight, and AI-generated digest is saved as plain markdown in a folder you own — ready for Claude Code, Obsidian, or any tool that reads text.">
+
+  <link rel="icon" type="image/png" href="assets/icon.png">
+  <link rel="apple-touch-icon" href="assets/icon.png">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Guignol — read the web, save to markdown">
+  <meta property="og:description" content="A local-first RSS reader that writes every article, highlight, and digest to a folder you own.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="assets/screenshot/reader.png">
+
+  <!-- Fonts: Space Grotesk matches the app; system serif stack matches the in-app reading font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="/">
+        <img class="brand-mark" src="assets/icon.png" alt="">
+        <span class="brand-name">Guignol</span>
+      </a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="#vault">Vault</a>
+        <a href="#reading">Reading</a>
+        <a href="#digests">Digests</a>
+        <a href="#claude">Claude</a>
+        <a href="#download">Download</a>
+      </nav>
+    </div>
+  </header>
+
+  <!--
+    Hero headline alternatives. Current pick is the most concrete.
+    Swap freely — the rest of the page doesn't depend on which one you use.
+
+    A) "Read the web. Save to markdown. Hand it to your assistant."   ← current
+    B) "An RSS reader that writes plain markdown you own."
+    C) "Your reading, as markdown your assistant can read."
+    D) "The RSS reader your AI already knows how to use."
+  -->
+  <section class="hero">
+    <div class="container">
+      <p class="eyebrow">Guignol · Local-first RSS reader · macOS · Free</p>
+      <h1 class="h1">
+        Read the web.<br>
+        Save to markdown.<br>
+        Hand it to your <em>assistant</em>.
+      </h1>
+      <p class="lede">
+        Guignol is a free RSS reader that stores every article, highlight,
+        and AI-generated digest as plain text in a folder you own —
+        ready for Claude Code, Obsidian, or any tool that speaks markdown.
+      </p>
+      <div class="cta">
+        <a class="btn btn-primary" href="#download">Download for macOS</a>
+        <a class="btn btn-ghost" href="https://github.com/" rel="noopener">View on GitHub →</a>
+      </div>
+      <p class="hero-meta">Free. No account. No telemetry. Your files stay on your Mac.</p>
+    </div>
+
+    <figure class="hero-shot">
+      <img
+        src="assets/screenshot/reader.png"
+        alt="The Guignol three-pane reader: feed list on the left, articles in the middle, a long-form reading view on the right with an AI Summary button."
+        loading="eager"
+        decoding="async">
+    </figure>
+  </section>
+
+  <!-- 01 — The Vault ........................................................... -->
+  <section id="vault" class="section">
+    <div class="container two-col">
+      <div class="col-text">
+        <p class="label">01 — The Vault</p>
+        <h2 class="h2">A folder on your Mac.<br>Yours to keep.</h2>
+        <p class="body">
+          Guignol writes every article, every highlight, and every digest
+          to plain markdown files in a folder you choose. No database.
+          No proprietary format. Grep it. Commit it. Sync it with iCloud,
+          Dropbox, or git — or don't sync it at all. When you want out,
+          there's nothing to export, because there was nothing to import.
+        </p>
+        <ul class="bullets">
+          <li>Configurable <strong>vault</strong>, <strong>highlights</strong>, and <strong>digests</strong> paths.</li>
+          <li>One markdown file per article, with clean YAML frontmatter.</li>
+          <li>Import and export OPML for your feed list.</li>
+        </ul>
+      </div>
+      <figure class="col-visual shot-frame">
+        <img
+          src="assets/screenshot/settings.png"
+          alt="Guignol Settings: three configurable folder paths for the vault, highlights, and digests, plus theme, language, polling interval, and a Claude CLI binary field."
+          loading="lazy"
+          decoding="async">
+      </figure>
+    </div>
+  </section>
+
+  <!-- 02 — Reading ............................................................. -->
+  <section id="reading" class="section section-alt">
+    <div class="container two-col two-col-reverse">
+      <div class="col-text">
+        <p class="label">02 — Close reading</p>
+        <h2 class="h2">Highlight what matters.<br>Summaries on demand.</h2>
+        <p class="body">
+          Guignol strips the junk and renders every article in a
+          long-form reading view with a serif body, comfortable measure,
+          and keyboard navigation. Mark a passage and it's saved as a
+          highlight in markdown — with a link back to the source. Ask for
+          an AI summary and it lands above the article, or in your digest.
+        </p>
+        <ul class="bullets">
+          <li>Reader-mode rendering with <em>Iowan Old Style</em> typography.</li>
+          <li>Highlights saved as one file per article, mirroring the vault.</li>
+          <li>On-demand AI summary per article, regenerable anytime.</li>
+        </ul>
+      </div>
+      <figure class="col-visual shot-frame">
+        <img
+          src="assets/screenshot/ai-summary.png"
+          alt="An article opened in Guignol's reader: a generated summary sits above the body, and passages in the article are highlighted in amber with underlines."
+          loading="lazy"
+          decoding="async">
+      </figure>
+    </div>
+  </section>
+
+  <!-- 03 — Highlights gathered ................................................ -->
+  <section id="highlights" class="section">
+    <div class="container two-col">
+      <div class="col-text">
+        <p class="label">03 — Highlights, gathered</p>
+        <h2 class="h2">Every sentence you saved,<br>in one place.</h2>
+        <p class="body">
+          A single view gathers every highlight from every feed —
+          filterable by source, full-text searchable, each line linked
+          back to the article it came from. It is, quietly, the most
+          useful page in the app: the distilled web you actually read.
+        </p>
+        <p class="body" style="margin-top:18px;">
+          And every highlight is also a markdown line in
+          <code>~/Guignol/highlights/&lt;article&gt;.md</code>,
+          mirroring your vault — so anything that reads the folder
+          sees exactly what you marked.
+        </p>
+      </div>
+      <figure class="col-visual shot-frame">
+        <img
+          src="assets/screenshot/highlights.png"
+          alt="Guignol's All Highlights view: highlighted passages from multiple feeds listed one after another, each labelled with its source and date."
+          loading="lazy"
+          decoding="async">
+      </figure>
+    </div>
+  </section>
+
+  <!-- 04 — Digests ............................................................. -->
+  <section id="digests" class="section section-alt">
+    <div class="container">
+      <p class="label">04 — Digests</p>
+      <h2 class="h2">Your week, read for you.</h2>
+      <p class="lede">
+        Claude reads what you saved and writes a digest every day, week,
+        or month. Not a summary — a digest. Themes. Through-lines. What repeated.
+      </p>
+
+      <figure class="shot-frame shot-wide">
+        <img
+          src="assets/screenshot/digest.png"
+          alt="A Guignol digest for the period January 1 to April 15, 2026: six themed bullets with bold phrases pulled from the sources, each linking back to the articles it drew from."
+          loading="lazy"
+          decoding="async">
+      </figure>
+
+      <div class="cards">
+        <article class="card">
+          <p class="card-label">Daily</p>
+          <h3 class="card-title">Yesterday, in three bullets.</h3>
+          <p class="card-body">
+            A morning brief of what landed in your feeds overnight,
+            grouped by theme rather than by source.
+          </p>
+        </article>
+
+        <article class="card">
+          <p class="card-label">Weekly</p>
+          <h3 class="card-title">The through-line.</h3>
+          <p class="card-body">
+            What the week was actually about — the topic every source
+            returned to, written into a single markdown file in your vault.
+          </p>
+        </article>
+
+        <article class="card">
+          <p class="card-label">Monthly</p>
+          <h3 class="card-title">Shifts worth noticing.</h3>
+          <p class="card-body">
+            Longer arcs: what changed in the conversation, which sources
+            stayed sharp, what you kept re-reading.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 — Bring your own Claude .............................................. -->
+  <!--
+    The architectural story. Two messages folded into one section:
+      (1) Guignol's AI features are powered by the user's locally-installed
+          Claude Code — no embedded API key, no token meter, no Guignol
+          server. This is why it can be free.
+      (2) Every highlight is a file in ~/Guignol/highlights/ — so the
+          terminal demo cd's straight into that folder to make the point.
+  -->
+  <section id="claude" class="section section-dark">
+    <div class="container two-col">
+      <div class="col-text">
+        <p class="label">05 — Bring your own Claude</p>
+        <h2 class="h2">No API key.<br>No subscription.<br><em>Your</em> Claude. Your terms.</h2>
+        <p class="body">
+          Every AI feature in Guignol — article summaries, daily,
+          weekly, and monthly digests, anything we add later —
+          runs through the <code>claude</code> CLI installed on your
+          Mac. There is no embedded model. No Guignol API key.
+          No token meter. You install Claude Code, sign in once, and
+          Guignol borrows your session. Your prompts never touch a
+          Guignol server, because there isn't one.
+        </p>
+        <ul class="bullets">
+          <li>Powered by <a href="#" rel="noopener">Claude Code</a> on your Mac, called as a subprocess.</li>
+          <li>Set the binary path in <strong>Settings → Binary Claude CLI</strong>.</li>
+          <li>And of course — once it's all markdown, you can run Claude on the folder yourself.</li>
+        </ul>
+      </div>
+      <div class="col-visual">
+<pre class="terminal" aria-label="Example shell session: ls the highlights folder, then ask Claude what threads run through your highlights">
+<span class="p">$</span> cd ~/Guignol/highlights
+<span class="p">$</span> ls | head -4
+2026-04-15-stratechery-open-web.md
+2026-04-14-fowler-microservices.md
+2026-04-12-anthropic-evals.md
+2026-04-09-kohlmeier-attention.md
+
+<span class="p">$</span> claude -p <span class="s">"What threads run through
+       my highlights this week?"</span>
+
+<span class="d">Reading 14 highlights across 6 articles …</span>
+
+Two threads keep returning across what you marked:
+
+  · <span class="h">Evaluation gaps.</span> You highlighted
+    <span class="s">"capability vs. disposition"</span> twice and
+    underlined <span class="s">"benchmarks measure compliance,
+    not safety."</span>
+
+  · A phrase you marked three times across sources:
+    <span class="s">"writing as thinking is downstream of
+    writing as evidence."</span>
+</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- Manifesto ................................................................ -->
+  <!--
+    TODO(Mauro): This is the one place where your voice matters more than mine.
+    A founder's "why" is the one thing AI copy can't fake — and it's the section
+    readers remember.
+
+    Consider 4–8 sentences on:
+      · Why local-first? (What went wrong with a cloud tool once.)
+      · Why markdown? (What tool did you want to hand your reading to?)
+      · Why "Guignol"? (Puppets, theatre, the name's origin.)
+
+    Below is a placeholder. Replace with your own words if you can — keep
+    the italicised sentence at the end, it sets the tone nicely.
+  -->
+  <section class="section section-quote">
+    <div class="container">
+      <p class="label">Why local-first</p>
+      <blockquote class="manifesto">
+        No account. No server. No telemetry. Your feeds, articles, and
+        highlights live in a folder on your Mac. You can sync it with
+        iCloud Drive, Dropbox, or git — or not sync it at all. Guignol
+        does not care. <em>It is software that assumes you will outlive it.</em>
+      </blockquote>
+    </div>
+  </section>
+
+  <!-- Download ................................................................. -->
+  <section id="download" class="section section-download">
+    <div class="container">
+      <p class="label">Download</p>
+      <h2 class="h2">Free. For Mac.</h2>
+      <p class="lede">macOS 12 Monterey or later. Apple Silicon &amp; Intel.</p>
+
+      <div class="download-row">
+        <a class="btn btn-primary btn-lg" href="#" data-download>Download Guignol 0.1</a>
+        <p class="download-meta">Signed · Notarized · ~80 MB</p>
+      </div>
+      <p class="tiny">
+        Or grab it from <a href="https://github.com/" rel="noopener">GitHub Releases</a>.
+        Homebrew Cask coming soon.
+      </p>
+    </div>
+  </section>
+
+  <!-- Footer ................................................................... -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <p class="footer-brand">Guignol</p>
+      <p class="footer-note">
+        An indie Mac app by <a href="https://github.com/" rel="noopener">Mauro Murru</a>.
+        No tracking, no cookies, no telemetry.
+      </p>
+      <nav class="footer-links" aria-label="Secondary">
+        <a href="https://github.com/" rel="noopener">GitHub</a>
+        <a href="#">Privacy</a>
+        <a href="#">Changelog</a>
+      </nav>
+    </div>
+  </footer>
+
+</body>
+</html>

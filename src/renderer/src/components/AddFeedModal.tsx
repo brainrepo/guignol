@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 interface Props {
   open: boolean
@@ -7,6 +8,7 @@ interface Props {
 }
 
 export default function AddFeedModal({ open, onClose, onAdded }: Props): JSX.Element | null {
+  const { t } = useTranslation()
   const [url, setUrl] = useState('')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -57,18 +59,18 @@ export default function AddFeedModal({ open, onClose, onAdded }: Props): JSX.Ele
         className="bg-bg-panel border border-fg-faint rounded-lg w-[480px] max-w-[90vw] shadow-[0_20px_50px_rgba(0,0,0,0.3)] overflow-hidden"
       >
         <header className="px-6 pt-6 pb-1">
-          <div className="label mb-1">Nuovo feed</div>
+          <div className="label mb-1">{t('addFeed.label')}</div>
           <h2 className="font-serif text-2xl font-normal tracking-tight text-fg m-0">
-            Aggiungi un feed RSS
+            {t('addFeed.title')}
           </h2>
         </header>
 
         <div className="px-6 py-5">
-          <label className="label block mb-2">URL</label>
+          <label className="label block mb-2">{t('addFeed.url')}</label>
           <input
             ref={inputRef}
             type="url"
-            placeholder="https://example.com/rss"
+            placeholder={t('addFeed.placeholder')}
             value={url}
             onChange={(e) => setUrl(e.target.value)}
             disabled={busy}
@@ -86,14 +88,14 @@ export default function AddFeedModal({ open, onClose, onAdded }: Props): JSX.Ele
             disabled={busy}
             className="px-3 py-1.5 text-xs uppercase tracking-caps text-fg-dim rounded hover:text-fg hover:bg-bg-hover"
           >
-            Annulla
+            {t('addFeed.cancel')}
           </button>
           <button
             type="submit"
             disabled={busy || !url.trim()}
             className="px-3 py-1.5 text-xs uppercase tracking-caps text-accent rounded hover:text-bg hover:bg-accent disabled:opacity-35"
           >
-            {busy ? 'Aggiungo…' : 'Aggiungi'}
+            {busy ? t('addFeed.submitting') : t('addFeed.submit')}
           </button>
         </footer>
       </form>

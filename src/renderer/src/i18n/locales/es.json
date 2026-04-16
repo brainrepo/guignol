@@ -1,0 +1,158 @@
+{
+  "common": {
+    "loading": "Cargando…",
+    "cancel": "Cancelar",
+    "remove": "Eliminar",
+    "close": "Cerrar",
+    "browse": "Examinar…",
+    "notFound": "No encontrado"
+  },
+  "app": {
+    "addFeed": "Añadir feed",
+    "addFeedTooltip": "Añadir feed (⌘N)",
+    "hideSidebar": "Ocultar barra lateral",
+    "showSidebar": "Mostrar barra lateral",
+    "hideSidebarTooltip": "Ocultar barra lateral (⌘\\)",
+    "showSidebarTooltip": "Mostrar barra lateral (⌘\\)",
+    "resizeSidebar": "Redimensionar barra lateral",
+    "resizeArticleList": "Redimensionar lista de artículos",
+    "refresh": "Actualizar",
+    "settings": "Ajustes",
+    "selectArticle": "Selecciona un artículo para leerlo",
+    "articleCountUnread": "{{unread}} sin leer · {{total}} artículos",
+    "articleCount": "{{total}} artículos"
+  },
+  "feedList": {
+    "highlights": "Destacados",
+    "digests": "Resumen",
+    "feeds": "Feeds",
+    "all": "Todos",
+    "confirmRemove": "¿Eliminar este feed? (los artículos en el disco se conservan)"
+  },
+  "articleList": {
+    "empty": "Sin artículos. Añade un feed o espera la próxima actualización."
+  },
+  "articleDetail": {
+    "loading": "Cargando…",
+    "notFound": "Artículo no encontrado",
+    "original": "Original",
+    "save": "Guardar",
+    "saved": "Guardado",
+    "highlights": "Destacados",
+    "summaryAi": "Resumen IA",
+    "regenerate": "Regenerar",
+    "generating": "Generando…",
+    "summaryHeading": "Resumen",
+    "generatedAt": "generado el {{date}}",
+    "highlightCount_one": "{{count}} destacado",
+    "highlightCount_other": "{{count}} destacados",
+    "highlightAction": "Destacar",
+    "removeHighlight": "Quitar destacado",
+    "removeHighlightAria": "Quitar destacado",
+    "scrollToHighlight": "Desplazar al pasaje",
+    "drawerEmpty": "Selecciona texto en el artículo y pulsa Destacar para añadirlo.",
+    "highlightCountLabel_one": "{{count}} destacado",
+    "highlightCountLabel_other": "{{count}} destacados"
+  },
+  "settings": {
+    "title": "Ajustes",
+    "theme": {
+      "label": "Tema",
+      "system": "Sistema",
+      "systemHint": "sigue a macOS",
+      "light": "Claro",
+      "lightHint": "light cold",
+      "dark": "Oscuro",
+      "darkHint": "dark cold"
+    },
+    "language": {
+      "label": "Idioma",
+      "hint": "Cambia el idioma de la interfaz y el idioma de los resúmenes y digests generados por la IA."
+    },
+    "vaultPath": {
+      "label": "Ruta del vault",
+      "hint": "Reinicia la app tras cambiar la ruta. Los artículos existentes permanecen donde estaban."
+    },
+    "highlightsPath": {
+      "label": "Ruta de destacados",
+      "hint": "Directorio donde se guardan los destacados. Un archivo markdown por artículo, estructura reflejada del vault."
+    },
+    "digestsPath": {
+      "label": "Ruta de digests",
+      "hint": "Directorio donde se guardan los digests generados por la IA. Un archivo markdown por digest."
+    },
+    "polling": {
+      "label": "Polling (minutos)"
+    },
+    "notifications": {
+      "label": "Notificaciones de escritorio para nuevos artículos"
+    },
+    "claudeBinary": {
+      "label": "Binario Claude CLI",
+      "hintPrefix": "Por defecto:",
+      "hintSuffix": "Usa una ruta absoluta si es necesario, p. ej."
+    },
+    "opml": {
+      "title": "OPML",
+      "import": "Importar OPML…",
+      "export": "Exportar OPML…",
+      "importing": "Importando…",
+      "imported": "Importados {{added}} nuevos feeds ({{skipped}} ya presentes, {{errors}} errores)",
+      "exported": "Exportado a {{path}}",
+      "cancelled": "Cancelado"
+    }
+  },
+  "highlights": {
+    "title": "Destacados",
+    "heading": "Todos los destacados",
+    "count_one": "{{count}} destacado",
+    "count_other": "{{count}} destacados",
+    "filtered": "{{count}} filtrados",
+    "searchPlaceholder": "Buscar en el texto o en el título…",
+    "allFeeds": "Todos",
+    "emptyAll": "Sin destacados. Abre un artículo, selecciona texto y pulsa Destacar.",
+    "emptyFiltered": "Sin resultados para el filtro actual."
+  },
+  "digestsList": {
+    "heading": "Digests",
+    "newButton": "Nuevo",
+    "count_one": "{{count}} digest",
+    "count_other": "{{count}} digests",
+    "empty": "Sin digests. Pulsa Nuevo para crear uno.",
+    "articleShort": "art.",
+    "empty_preview": "(vacío)"
+  },
+  "digestDetail": {
+    "label": "Digest",
+    "selectOne": "Selecciona un digest para leerlo",
+    "loading": "Cargando…",
+    "notFound": "Digest no encontrado",
+    "articleCount_one": "{{count}} artículo",
+    "articleCount_other": "{{count}} artículos",
+    "includedHeading": "Artículos incluidos — {{count}}",
+    "openInGuignol": "Abrir artículo en Guignol",
+    "openExternal": "Abrir enlace externo"
+  },
+  "createDigest": {
+    "label": "Nuevo digest",
+    "title": "Resumir los artículos sin leer",
+    "fromDate": "Desde el día",
+    "presetLast24h": "Últimas 24 horas",
+    "presetLast3days": "Últimos 3 días",
+    "presetLastWeek": "Última semana",
+    "presetLast30days": "Últimos 30 días",
+    "busy": "Claude está leyendo y resumiendo… puede tardar hasta un minuto.",
+    "cancel": "Cancelar",
+    "submit": "Crear digest",
+    "generating": "Generando…"
+  },
+  "addFeed": {
+    "label": "Nuevo feed",
+    "title": "Añadir un feed RSS",
+    "url": "URL",
+    "placeholder": "https://example.com/rss",
+    "cancel": "Cancelar",
+    "submit": "Añadir",
+    "submitting": "Añadiendo…"
+  }
+}
