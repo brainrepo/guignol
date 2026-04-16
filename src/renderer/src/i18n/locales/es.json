@@ -102,10 +102,19 @@
     "notifications": {
       "label": "Notificaciones de escritorio para nuevos artículos"
     },
+    "ai": {
+      "providerLabel": "Proveedor IA",
+      "providerHint": "Elige qué CLI ejecuta Guignol para resúmenes y digests. El proveedor seleccionado debe instalarse y autenticarse por separado."
+    },
     "claudeBinary": {
       "label": "Binario Claude CLI",
       "hintPrefix": "Por defecto:",
       "hintSuffix": "Usa una ruta absoluta si es necesario, p. ej."
+    },
+    "codexBinary": {
+      "label": "Binario Codex CLI",
+      "hintPrefix": "Por defecto:",
+      "hintAuth": "Requiere OPENAI_API_KEY o un previo"
     },
     "opml": {
       "title": "OPML",

@@ -7,7 +7,7 @@ import { runNow, restart, schedulerEvents } from './feeds/scheduler.js'
 import { buildIndex, getAllMeta, getMeta, getMetaByFeed, upsertMeta } from './vault/index.js'
 import { readArticleFile } from './vault/reader.js'
 import { updateArticleFrontmatter } from './vault/writer.js'
-import { summarize } from './ai/claude-cli.js'
+import { summarizeArticle } from './ai/index.js'
 import { fetchReaderContent, ReaderExtractionError, type ReaderResult } from './reader/extract.js'
 import { importOpml } from './opml/import.js'
 import { exportOpml } from './opml/export.js'
@@ -91,11 +91,11 @@ export function registerIpc(): void {
     const meta = getMeta(id)
     if (!meta) throw new Error(`Article ${id} not found`)
     const article = await readArticleFile(meta.filePath)
-    const result = await summarize(article)
-    const patch = { summary: result.summary, summary_generated_at: new Date().toISOString() }
+    const result = await summarizeArticle(article)
+    const patch = { summary: result.content, summary_generated_at: new Date().toISOString() }
     await updateArticleFrontmatter(meta.filePath, patch)
     upsertMeta({ ...meta, ...patch })
-    return result
+    return { summary: result.content, model: result.model }
   })
 
   // ===== Reader mode =====

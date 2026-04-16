@@ -1,6 +1,6 @@
 {
   "name": "guignol",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Local-first RSS reader with markdown vault and AI summaries",
   "main": "./out/main/index.js",
   "author": "Mauro Murru",

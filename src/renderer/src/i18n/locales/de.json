@@ -102,10 +102,19 @@
     "notifications": {
       "label": "Desktop-Benachrichtigungen für neue Artikel"
     },
+    "ai": {
+      "providerLabel": "KI-Provider",
+      "providerHint": "Wähle, welche CLI Guignol für Zusammenfassungen und Digests startet. Der gewählte Provider muss separat installiert und authentifiziert sein."
+    },
     "claudeBinary": {
       "label": "Claude-CLI-Binary",
       "hintPrefix": "Standard:",
       "hintSuffix": "Bei Bedarf absoluten Pfad verwenden, z. B."
+    },
+    "codexBinary": {
+      "label": "Codex-CLI-Binary",
+      "hintPrefix": "Standard:",
+      "hintAuth": "Erfordert OPENAI_API_KEY oder ein vorheriges"
     },
     "opml": {
       "title": "OPML",

@@ -9,7 +9,9 @@ const defaults: AppSettings = {
   digestsPath: join(app.getPath('documents'), 'Guignol-Digests'),
   pollingMinutes: 15,
   notificationsEnabled: true,
+  aiProvider: 'claude',
   claudeBinary: 'claude',
+  codexBinary: 'codex',
   theme: 'system',
   language: 'en'
 }
@@ -18,6 +20,10 @@ const store = new Store<AppSettings>({
   name: 'guignol-settings',
   defaults
 })
+
+// Migrate dropped providers: users who had selected 'gemini' before its removal
+// would otherwise trip `Unknown AI provider` on the next summarize call.
+if ((store.get('aiProvider') as string) === 'gemini') store.set('aiProvider', 'claude')
 
 export const settings = {
   get<K extends keyof AppSettings>(key: K): AppSettings[K] {

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Folder } from 'lucide-react'
-import type { AppSettings, Language, Theme } from '../../../shared/types'
-import { LANGUAGES } from '../../../shared/types'
+import type { AiProviderName, AppSettings, Language, Theme } from '../../../shared/types'
+import { AI_PROVIDERS, LANGUAGES } from '../../../shared/types'
 
 interface Props { onChanged: () => void }
 
@@ -147,6 +147,29 @@ export default function Settings({ onChanged }: Props): JSX.Element {
         {t('settings.notifications.label')}
       </label>
 
+      <fieldset className="border-0 p-0 m-0 mb-7">
+        <legend className="label mb-3">{t('settings.ai.providerLabel')}</legend>
+        <div className="flex flex-wrap gap-1.5">
+          {(Object.entries(AI_PROVIDERS) as [AiProviderName, { label: string }][]).map(([code, meta]) => {
+            const active = settings.aiProvider === code
+            return (
+              <button
+                key={code}
+                type="button"
+                onClick={() => update({ aiProvider: code })}
+                aria-pressed={active}
+                className={`px-3 py-1.5 text-[13px] rounded-full border transition-colors ${active ? 'bg-accent text-bg border-accent' : 'text-fg-dim border-fg-faint hover:text-fg hover:bg-bg-hover'}`}
+              >
+                {meta.label}
+              </button>
+            )
+          })}
+        </div>
+        <small className="block mt-2 font-normal text-fg-muted normal-case tracking-normal text-xs">
+          {t('settings.ai.providerHint')}
+        </small>
+      </fieldset>
+
       <label className={labelClass}>
         {t('settings.claudeBinary.label')}
         <input
@@ -158,6 +181,20 @@ export default function Settings({ onChanged }: Props): JSX.Element {
         />
         <small className="block font-normal text-fg-muted mt-1.5 normal-case tracking-normal text-xs">
           {t('settings.claudeBinary.hintPrefix')} <code>claude</code>. {t('settings.claudeBinary.hintSuffix')} <code>/opt/homebrew/bin/claude</code>.
+        </small>
+      </label>
+
+      <label className={labelClass}>
+        {t('settings.codexBinary.label')}
+        <input
+          type="text"
+          value={settings.codexBinary}
+          onChange={(e) => setSettings({ ...settings, codexBinary: e.target.value })}
+          onBlur={() => update({ codexBinary: settings.codexBinary })}
+          className={inputClass}
+        />
+        <small className="block font-normal text-fg-muted mt-1.5 normal-case tracking-normal text-xs">
+          {t('settings.codexBinary.hintPrefix')} <code>codex</code>. {t('settings.codexBinary.hintAuth')} <code>codex login</code>.
         </small>
       </label>
 

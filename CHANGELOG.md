@@ -4,6 +4,21 @@ All notable changes to Guignol are documented in this file.
 
 Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning follows [SemVer](https://semver.org/).
 
+## [0.4.0] - 2026-04-16
+
+### Added
+- **Multi-provider AI support** — pick between Claude CLI and Codex CLI in Settings. Each provider runs as an isolated CLI adapter with its own binary-path field, so custom install locations (`/opt/homebrew/bin/...`) work without shell-PATH gymnastics.
+- **Codex CLI provider** (`@openai/codex`). Non-interactive invocation via `codex exec -` with stdin-piped prompts. Auth via `OPENAI_API_KEY` env var or a prior `codex login` session — no API key is stored by Guignol.
+- **AI provider picker** in Settings with localized labels across all five locales (en / it / es / fr / de).
+- **Refreshed app icon.** New 1024×1024 master regenerated into the full macOS iconset (10 slots covering 16–1024 px, including every `@2x` variant). Website favicon, apple-touch-icon, and brand mark updated to match.
+
+### Changed
+- **AI summarization refactored into a pluggable provider abstraction** (`src/main/ai/`). A shared JSON response envelope (`AiResponse`) unifies parsing across providers; callers now go through `summarizeArticle()` / `runAi()` instead of the old Claude-specific path. Digest generation uses the active provider (no more Claude coupling).
+- **PATH resolution for provider CLIs** — Electron GUI launches on macOS now extend `PATH` to include `/usr/local/bin`, `/opt/homebrew/bin`, and `~/.local/bin`, so provider binaries resolve even when the user hasn't configured an absolute path in Settings.
+- **Settings storage self-heals stale provider values** — users who had selected a provider that was later removed are silently reset to Claude on next launch instead of tripping an `Unknown AI provider` error.
+
+---
+
 ## [0.3.0] - 2026-04-16
 
 ### Added

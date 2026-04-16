@@ -47,6 +47,13 @@ export type Theme = 'light' | 'dark' | 'system'
 
 export type Language = 'en' | 'it' | 'es' | 'fr' | 'de'
 
+export type AiProviderName = 'claude' | 'codex'
+
+export const AI_PROVIDERS: Record<AiProviderName, { label: string }> = {
+  claude: { label: 'Claude CLI' },
+  codex: { label: 'Codex CLI' }
+}
+
 export const LANGUAGES: Record<Language, { label: string; promptName: string }> = {
   en: { label: 'English', promptName: 'English' },
   it: { label: 'Italiano', promptName: 'Italian' },
@@ -61,7 +68,9 @@ export interface AppSettings {
   digestsPath: string
   pollingMinutes: number
   notificationsEnabled: boolean
+  aiProvider: AiProviderName
   claudeBinary: string
+  codexBinary: string
   theme: Theme
   language: Language
 }

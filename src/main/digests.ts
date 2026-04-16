@@ -3,9 +3,8 @@ import { createHash } from 'node:crypto'
 import { join } from 'node:path'
 import matter from 'gray-matter'
 import type { DigestArticleRef, DigestDoc, DigestScope, Language } from '../shared/types.js'
-import { LANGUAGES } from '../shared/types.js'
 import { settings } from './settings.js'
-import { runClaude } from './ai/claude-cli.js'
+import { runAi, buildDigestPrompt } from './ai/index.js'
 import { getAllMeta, upsertMeta } from './vault/index.js'
 import { readArticleFile } from './vault/reader.js'
 import { updateArticleFrontmatter } from './vault/writer.js'
@@ -32,43 +31,6 @@ function stripUndefined(obj: Record<string, unknown>): Record<string, unknown> {
     out[k] = v
   }
   return out
-}
-
-/**
- * Digest prompt. English instructions with `Respond in {Language}` injection
- * so Claude writes the digest in the user's chosen UI language.
- */
-function buildDigestPrompt(
-  entries: { title: string; feed: string; link: string; preview: string }[],
-  lang: Language
-): string {
-  const languageName = LANGUAGES[lang].promptName
-  const lines: string[] = [
-    `Summarize the highlights from these ${entries.length} unread articles in 5-7 thematic bullet points. Respond in ${languageName}.`,
-    'Group similar themes when possible.',
-    '',
-    'IMPORTANT — source link formatting:',
-    '- At the end of each bullet, cite sources as markdown links.',
-    '- The link text MUST be a short (3-6 word) version of the article title, NOT the word "source".',
-    '- Example: `... considerations on the [MCP protocol in AI clients](URL).`',
-    '- If a bullet derives from multiple articles, chain multiple links separated by spaces.',
-    '- Use exactly the URLs provided below; do not invent or modify them.',
-    '',
-    'Do not add any preamble — return only the bullets.',
-    '',
-    '---'
-  ]
-  entries.forEach((e, i) => {
-    lines.push('')
-    lines.push(`### Article ${i + 1} — ${e.feed}`)
-    lines.push(`Title: ${e.title}`)
-    lines.push(`URL: ${e.link}`)
-    if (e.preview) {
-      lines.push('Preview:')
-      lines.push(e.preview)
-    }
-  })
-  return lines.join('\n')
 }
 
 function renderDigestBody(doc: DigestDoc, lang: Language): string {
@@ -161,7 +123,7 @@ export async function createDigest(
 
   const lang = settings.get('language')
   const prompt = buildDigestPrompt(entries, lang)
-  const summary = await runClaude(prompt, 90_000)
+  const { content: summary } = await runAi(prompt, 90_000, 'digest')
 
   const articles: DigestArticleRef[] = unread.map((m) => ({
     id: m.id,
