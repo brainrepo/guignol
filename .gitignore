@@ -5,3 +5,8 @@ dist/
 *.log
 .env
 .env.local
+
+# Build artifacts — hosted releases live in GitHub Releases, not in the repo
+*.dmg
+*.zip
+web/downloads/
