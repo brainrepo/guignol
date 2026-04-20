@@ -1,47 +1,82 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is([data-theme='dark'] *));
 
 @theme {
-  --color-bg: #fafbfc;
-  --color-bg-panel: #eef1ec;
-  --color-bg-alt: #eef0eb;
-  --color-bg-hover: #e2e7de;
-  --color-fg: #0f1a14;
-  --color-fg-dim: #22302a;
-  --color-fg-muted: #5d6d65;
-  --color-fg-faint: #d2d8cf;
-  --color-accent: #1e3a5f;
-  --color-accent-dim: #2f4f7a;
-  --color-unread: #1e3a5f;
+  --color-bg: #f8fafc;          /* slate-50 */
+  --color-bg-panel: #f1f5f9;    /* slate-100 */
+  --color-bg-alt: #e2e8f0;      /* slate-200 */
+  --color-bg-hover: #cbd5e1;    /* slate-300 */
+  --color-fg: #0f172a;          /* slate-900 */
+  --color-fg-dim: #334155;      /* slate-700 */
+  --color-fg-muted: #64748b;    /* slate-500 */
+  --color-fg-faint: #cbd5e1;    /* slate-300 */
+  --color-accent: #334155;      /* slate-700 */
+  --color-accent-dim: #475569;  /* slate-600 */
+  --color-underline: #94a3b8;   /* slate-400 */
+  --color-unread: #334155;      /* slate-700 */
 
-  --color-highlight: rgba(232, 184, 58, 0.38);
-  --color-highlight-strong: rgba(232, 184, 58, 0.55);
-  --color-highlight-border: rgba(200, 144, 28, 0.6);
+  --color-highlight: rgba(148, 163, 184, 0.30);       /* slate-400 */
+  --color-highlight-strong: rgba(148, 163, 184, 0.5);
+  --color-highlight-border: rgba(71, 85, 105, 0.6);   /* slate-600 */
 
-  --shadow-drawer: -8px 0 24px rgba(15, 26, 20, 0.10);
+  --shadow-drawer: -8px 0 24px rgba(15, 23, 42, 0.10);
 
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   --font-serif: 'Fraunces', 'Iowan Old Style', 'Charter', 'Georgia', serif;
   --font-mono: 'JetBrains Mono', 'SF Mono', 'Menlo', 'Consolas', monospace;
 
   --tracking-caps: 0.22em;
+
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+}
+
+/* shadcn/ui token aliases — reference existing CSS vars so light/dark
+   stays driven by [data-theme='dark'] block below. `inline` keeps
+   utility generation dynamic (var(--...)) instead of resolved-at-build. */
+@theme inline {
+  --color-background: var(--color-bg);
+  --color-foreground: var(--color-fg);
+  --color-card: var(--color-bg);
+  --color-card-foreground: var(--color-fg);
+  --color-popover: var(--color-bg);
+  --color-popover-foreground: var(--color-fg);
+  --color-primary: var(--color-accent);
+  --color-primary-foreground: var(--color-bg);
+  --color-secondary: var(--color-bg-alt);
+  --color-secondary-foreground: var(--color-fg);
+  --color-muted: var(--color-bg-panel);
+  --color-muted-foreground: var(--color-fg-muted);
+  --color-ui-accent: var(--color-bg-hover);
+  --color-ui-accent-foreground: var(--color-fg);
+  --color-destructive: #c43b3b;
+  --color-destructive-foreground: #ffffff;
+  --color-border: var(--color-fg-faint);
+  --color-input: var(--color-fg-faint);
+  --color-ring: var(--color-accent);
 }
 
 [data-theme='dark'] {
-  --color-bg: #0f1419;
-  --color-bg-panel: #141a22;
-  --color-bg-alt: #1a2029;
-  --color-bg-hover: #232b36;
-  --color-fg: #eaedf2;
-  --color-fg-dim: #c0c7d3;
-  --color-fg-muted: #6e7789;
-  --color-fg-faint: #2d343f;
-  --color-accent: #5b9cee;
-  --color-accent-dim: #4a85d4;
-  --color-unread: #5b9cee;
+  --color-bg: #020617;          /* slate-950 */
+  --color-bg-panel: #0f172a;    /* slate-900 */
+  --color-bg-alt: #1e293b;      /* slate-800 */
+  --color-bg-hover: #334155;    /* slate-700 */
+  --color-fg: #f1f5f9;          /* slate-100 */
+  --color-fg-dim: #cbd5e1;      /* slate-300 */
+  --color-fg-muted: #94a3b8;    /* slate-400 */
+  --color-fg-faint: #334155;    /* slate-700 */
+  --color-accent: #64748b;      /* slate-500 */
+  --color-accent-dim: #475569;  /* slate-600 */
+  --color-underline: #94a3b8;   /* slate-400 */
+  --color-unread: #cbd5e1;      /* slate-300 */
 
-  --color-highlight: rgba(232, 184, 58, 0.25);
-  --color-highlight-strong: rgba(232, 184, 58, 0.45);
-  --color-highlight-border: rgba(232, 184, 58, 0.7);
+  --color-highlight: rgba(148, 163, 184, 0.22);       /* slate-400 */
+  --color-highlight-strong: rgba(148, 163, 184, 0.45);
+  --color-highlight-border: rgba(203, 213, 225, 0.6); /* slate-300 */
 
   --shadow-drawer: -8px 0 24px rgba(0, 0, 0, 0.5);
 }
@@ -63,7 +98,7 @@
   a { color: inherit; text-decoration: none; }
   button { font: inherit; cursor: pointer; background: transparent; border: none; color: inherit; }
   button:disabled { opacity: 0.35; cursor: not-allowed; }
-  input { font: inherit; color: inherit; background: transparent; border: none; outline: none; }
+  input, textarea, select { font-family: var(--font-mono); color: inherit; background: transparent; border: none; outline: none; }
   ::-webkit-scrollbar { width: 10px; height: 10px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb {
@@ -82,15 +117,29 @@
   /* Navy "surface" — rail + sidebar share accent ground. Remap neutrals so
      existing text-fg / text-fg-muted utilities render legibly on navy.      */
   [data-surface='accent'] {
-    background: var(--color-accent);
-    color: #fff;
-    --color-fg: #ffffff;
-    --color-fg-dim: rgba(255, 255, 255, 0.82);
-    --color-fg-muted: rgba(255, 255, 255, 0.6);
-    --color-fg-faint: rgba(255, 255, 255, 0.18);
-    --color-bg-panel: color-mix(in oklab, #000 10%, var(--color-accent));
-    --color-bg-alt: rgba(255, 255, 255, 0.08);
-    --color-bg-hover: rgba(255, 255, 255, 0.10);
+    background: var(--color-surface-accent, var(--color-accent));
+    color: var(--color-surface-fg, #fff);
+    --color-fg: var(--color-surface-fg, #fff);
+    --color-fg-dim: var(--color-surface-fg-dim, rgba(255, 255, 255, 0.82));
+    --color-fg-muted: var(--color-surface-fg-muted, rgba(255, 255, 255, 0.6));
+    --color-fg-faint: var(--color-surface-fg-faint, rgba(255, 255, 255, 0.18));
+    --color-bg-panel: color-mix(in oklab, #000 10%, var(--color-surface-accent, var(--color-accent)));
+    --color-bg-alt: var(--color-surface-bg-alt, rgba(255, 255, 255, 0.08));
+    --color-bg-hover: var(--color-surface-bg-hover, rgba(255, 255, 255, 0.10));
+  }
+
+  [data-surface='accent'] {
+    --color-surface-accent: #1e293b;       /* slate-800 */
+    --color-surface-fg: #f1f5f9;           /* slate-100 */
+    --color-surface-fg-dim: rgba(241, 245, 249, 0.82);
+    --color-surface-fg-muted: rgba(241, 245, 249, 0.6);
+    --color-surface-fg-faint: rgba(241, 245, 249, 0.18);
+    --color-surface-bg-alt: rgba(255, 255, 255, 0.08);
+    --color-surface-bg-hover: rgba(255, 255, 255, 0.10);
+  }
+
+  [data-theme='dark'] [data-surface='accent'] {
+    --color-surface-accent: #1e293b;       /* slate-800 — lifts above slate-950 page */
   }
 
   /* Uppercase tracked label — editorial kicker */
@@ -122,24 +171,19 @@
     color: var(--color-fg-muted);
   }
 
-  /* Leftmost rail — now navy continuum with sidebar */
-  .rail {
-    background: var(--color-accent);
-    border-right: none;
+  /* Top bar — accent surface continuum with sidebar */
+  .topbar {
+    border-bottom: 1px solid var(--color-fg-faint);
   }
 
-  /* Vertical rotated brand in rail */
-  .rail-brand {
+  /* Wordmark in top bar */
+  .brand {
     font-family: var(--font-serif);
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 500;
-    font-style: italic;
-    writing-mode: vertical-rl;
-    transform: rotate(180deg);
-    letter-spacing: 0.25em;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.75);
-    padding-block: 6px;
+    color: var(--color-fg-dim);
   }
 
   /* Article body prose */
@@ -153,7 +197,7 @@
   }
   .article-body p { margin: 1em 0; text-wrap: pretty; }
   .article-body img { max-width: 100%; height: auto; border-radius: 4px; margin: 20px 0; }
-  .article-body a { color: var(--color-accent); border-bottom: 1px solid var(--color-accent-dim); }
+  .article-body a { color: var(--color-accent); border-bottom: 1px solid var(--color-underline); }
   .article-body a:hover {
     color: var(--color-bg); background: var(--color-accent); border-bottom-color: transparent;
   }
@@ -205,7 +249,7 @@
   .article-body mark[data-highlight].flash { animation: hl-flash 1.4s ease-out; }
   @keyframes hl-flash {
     0%   { background: var(--color-highlight); }
-    20%  { background: rgba(255, 200, 80, 0.95); box-shadow: 0 0 0 6px rgba(255, 200, 80, 0.35); }
+    20%  { background: rgba(127, 179, 224, 0.95); box-shadow: 0 0 0 6px rgba(127, 179, 224, 0.35); }
     100% { background: var(--color-highlight); box-shadow: 0 0 0 0 transparent; }
   }
 
@@ -234,13 +278,6 @@
   @keyframes tip-in {
     from { opacity: 0; transform: translate(-50%, -90%); }
     to { opacity: 1; transform: translate(-50%, -100%); }
-  }
-
-  /* Bullet dot utility (fallback non-tailwind) */
-  .dot-feed {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: var(--feed-color, var(--color-fg-muted));
-    flex-shrink: 0;
   }
 
   @keyframes fade-in {

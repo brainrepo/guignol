@@ -3,10 +3,18 @@ import { useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
-import { ArrowUpRight, BookOpen, Loader2, RefreshCw, Sparkles, Trash2, X } from 'lucide-react'
+import { ArrowUpRight, BookOpen, Loader2, RefreshCw, Sparkles, Trash2 } from 'lucide-react'
 import type { Article, Feed, Highlight } from '../../../shared/types'
-import { colorForFeed } from '../util/color'
 import { applyHighlights, scrollToHighlight } from '../util/highlights'
+import { Button } from '../components/ui/button'
+import { Tabs, TabsList, TabsTrigger } from '../components/ui/tabs'
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle
+} from '../components/ui/sheet'
+import { Badge } from '../components/ui/badge'
 
 function countWords(text: string): number {
   const matches = text.trim().match(/\S+/g)
@@ -200,7 +208,6 @@ export default function ArticleDetail({ id, onPatched, feeds }: Props): JSX.Elem
   )
 
   const feedTitle = feeds.find((f) => f.slug === article.feed)?.title ?? article.feed
-  const feedColor = colorForFeed(article.feed)
 
   const summarize = async (): Promise<void> => {
     setSummarizing(true)
@@ -255,15 +262,10 @@ export default function ArticleDetail({ id, onPatched, feeds }: Props): JSX.Elem
     }
   }
 
-  const actionBtn = 'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[13px] text-fg-dim hover:text-fg hover:bg-bg-hover transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 disabled:opacity-40 disabled:hover:text-fg-dim disabled:hover:bg-transparent'
-
   return (
     <article className="max-w-[680px] mx-auto px-14 pt-14 pb-20">
       <header className="mb-8">
-        <div
-          className="text-[11px] uppercase tracking-caps font-semibold mb-2"
-          style={{ color: feedColor }}
-        >
+        <div className="text-[11px] uppercase tracking-caps font-semibold mb-2 text-fg-muted">
           {feedTitle}
         </div>
         <h1 className="font-serif text-4xl leading-tight mb-4 font-medium tracking-tight">
@@ -287,15 +289,17 @@ export default function ArticleDetail({ id, onPatched, feeds }: Props): JSX.Elem
           )}
         </div>
         <div className="flex items-center gap-2 mt-4 flex-wrap">
-          <button
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={() => window.guignol.articles.openExternal(article.link)}
-            className={actionBtn}
+            className="rounded-full"
           >
             <ArrowUpRight size={14} strokeWidth={2} aria-hidden />
             <span>{t('articleDetail.original')}</span>
-          </button>
+          </Button>
           {!article.reader_body ? (
-            <button onClick={fetchReader} disabled={readerLoading} className={actionBtn}>
+            <Button variant="ghost" size="sm" onClick={fetchReader} disabled={readerLoading} className="rounded-full">
               {readerLoading ? (
                 <Loader2 size={14} strokeWidth={2} aria-hidden className="animate-spin" />
               ) : (
@@ -306,55 +310,45 @@ export default function ArticleDetail({ id, onPatched, feeds }: Props): JSX.Elem
                   ? t('articleDetail.readerLoading')
                   : t('articleDetail.readerMode')}
               </span>
-            </button>
+            </Button>
           ) : (
-            <div className="inline-flex items-center gap-0.5">
-              <div className="inline-flex rounded-full bg-bg-alt p-0.5" role="group" aria-label={t('articleDetail.readerMode')}>
-                <button
-                  onClick={() => setViewMode('feed')}
-                  aria-pressed={viewMode === 'feed'}
-                  className={`px-3 py-1 rounded-full text-[12px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 ${
-                    viewMode === 'feed' ? 'bg-bg text-fg shadow-sm' : 'text-fg-muted hover:text-fg'
-                  }`}
-                >
-                  {t('articleDetail.readerToggleFeed')}
-                </button>
-                <button
-                  onClick={() => setViewMode('reader')}
-                  aria-pressed={viewMode === 'reader'}
-                  className={`px-3 py-1 rounded-full text-[12px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 ${
-                    viewMode === 'reader' ? 'bg-bg text-fg shadow-sm' : 'text-fg-muted hover:text-fg'
-                  }`}
-                >
-                  {t('articleDetail.readerToggleReader')}
-                </button>
-              </div>
-              <button
+            <div className="inline-flex items-center gap-1">
+              <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as 'feed' | 'reader')}>
+                <TabsList>
+                  <TabsTrigger value="feed">{t('articleDetail.readerToggleFeed')}</TabsTrigger>
+                  <TabsTrigger value="reader">{t('articleDetail.readerToggleReader')}</TabsTrigger>
+                </TabsList>
+              </Tabs>
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={fetchReader}
                 disabled={readerLoading}
                 aria-label={t('articleDetail.readerRefresh')}
                 title={t('articleDetail.readerRefresh')}
-                className="inline-flex items-center justify-center rounded-full bg-bg-alt p-1.5 text-fg-muted hover:text-fg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 disabled:opacity-40 disabled:hover:text-fg-muted"
+                className="rounded-full bg-bg-alt"
               >
                 {readerLoading ? (
                   <Loader2 size={14} strokeWidth={2} aria-hidden className="animate-spin" />
                 ) : (
                   <RefreshCw size={14} strokeWidth={2} aria-hidden />
                 )}
-              </button>
+              </Button>
             </div>
           )}
           {highlights.length > 0 && (
-            <button
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={() => setDrawerOpen((v) => !v)}
               aria-pressed={drawerOpen}
-              className={actionBtn}
+              className="rounded-full"
             >
               <span>{t('articleDetail.highlights')}</span>
-              <span className="text-[11px] leading-none px-1.5 py-0.5 rounded-full bg-bg-alt text-fg-dim font-semibold">
+              <Badge variant="secondary" className="text-[11px] px-1.5 py-0 ml-1">
                 {highlights.length}
-              </span>
-            </button>
+              </Badge>
+            </Button>
           )}
         </div>
       </header>
@@ -386,9 +380,9 @@ export default function ArticleDetail({ id, onPatched, feeds }: Props): JSX.Elem
             <span className="text-fg-dim">{t('articleDetail.readerErrorPrefix')}</span>{' '}
             {article.reader_error}
           </span>
-          <button onClick={fetchReader} disabled={readerLoading} className={actionBtn}>
+          <Button variant="ghost" size="sm" onClick={fetchReader} disabled={readerLoading} className="rounded-full">
             {t('articleDetail.readerRetry')}
-          </button>
+          </Button>
         </div>
       )}
 
@@ -420,73 +414,63 @@ export default function ArticleDetail({ id, onPatched, feeds }: Props): JSX.Elem
         </div>
       )}
 
-      <aside
-        className={`fixed top-0 right-0 bottom-0 w-[380px] max-w-[90vw] bg-bg-panel border-l border-fg-faint flex flex-col z-40 transition-transform duration-200 ease-[cubic-bezier(0.4,0,0.2,1)] ${drawerOpen ? 'translate-x-0' : 'translate-x-full'}`}
-        style={{ boxShadow: 'var(--shadow-drawer)' }}
-        aria-hidden={!drawerOpen}
-      >
-        <header className="flex items-start justify-between px-7 pt-10 pb-5 shrink-0">
-          <div>
-            <div className="label mb-1">{t('articleDetail.highlights')}</div>
-            <h2 className="font-serif text-[22px] font-normal m-0 tracking-tight text-fg">
-              {t('articleDetail.highlightCountLabel', { count: highlights.length })}
-            </h2>
+      <Sheet open={drawerOpen} onOpenChange={setDrawerOpen}>
+        <SheetContent side="right" className="flex flex-col">
+          <SheetHeader className="px-7 pt-10 pb-5">
+            <div className="label">{t('articleDetail.highlights')}</div>
+            <SheetTitle>{t('articleDetail.highlightCountLabel', { count: highlights.length })}</SheetTitle>
+          </SheetHeader>
+          <div className="flex-1 overflow-y-auto px-7 pb-10">
+            {highlights.length === 0 && (
+              <div className="text-fg-muted text-[13px] leading-relaxed py-6">
+                {t('articleDetail.drawerEmpty')}
+              </div>
+            )}
+            <ul className="m-0 p-0 list-none flex flex-col gap-5">
+              {highlights.map((h, i) => (
+                <li
+                  key={i}
+                  onClick={() => bodyRef.current && scrollToHighlight(bodyRef.current, i)}
+                  title={t('articleDetail.scrollToHighlight')}
+                  className="group cursor-pointer pl-3.5 border-l-2 transition-[border-color,transform] duration-150 hover:translate-x-0.5"
+                  style={{ borderColor: 'var(--color-highlight-border)' }}
+                >
+                  <blockquote className="font-serif text-[15px] leading-snug text-fg m-0 p-0 border-0 not-italic">
+                    {h.text}
+                  </blockquote>
+                  <div className="flex items-center justify-between mt-1.5 label">
+                    <span>
+                      {new Date(h.createdAt).toLocaleString(i18n.language, {
+                        day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
+                      })}
+                    </span>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={async (e) => {
+                        e.stopPropagation()
+                        const next = await window.guignol.highlights.remove(id, h.text)
+                        setHighlights(next)
+                      }}
+                      aria-label={t('articleDetail.removeHighlightAria')}
+                      className="invisible group-hover:visible h-6 w-6 hover:text-destructive"
+                    >
+                      <Trash2 size={13} strokeWidth={2} aria-hidden />
+                    </Button>
+                  </div>
+                </li>
+              ))}
+            </ul>
           </div>
-          <button
-            onClick={() => setDrawerOpen(false)}
-            aria-label={t('common.close')}
-            className="p-1.5 text-fg-muted rounded hover:text-fg hover:bg-bg-hover"
-          >
-            <X size={18} strokeWidth={2} aria-hidden />
-          </button>
-        </header>
-        <div className="flex-1 overflow-y-auto px-7 pb-10">
-          {highlights.length === 0 && (
-            <div className="text-fg-muted text-[13px] leading-relaxed py-6">
-              {t('articleDetail.drawerEmpty')}
-            </div>
-          )}
-          <ul className="m-0 p-0 list-none flex flex-col gap-5">
-            {highlights.map((h, i) => (
-              <li
-                key={i}
-                onClick={() => bodyRef.current && scrollToHighlight(bodyRef.current, i)}
-                title={t('articleDetail.scrollToHighlight')}
-                className="group cursor-pointer pl-3.5 border-l-2 transition-[border-color,transform] duration-150 hover:translate-x-0.5"
-                style={{ borderColor: 'var(--color-highlight-border)' }}
-              >
-                <blockquote className="font-serif text-[15px] leading-snug text-fg m-0 p-0 border-0 not-italic">
-                  {h.text}
-                </blockquote>
-                <div className="flex items-center justify-between mt-1.5 label">
-                  <span>
-                    {new Date(h.createdAt).toLocaleString(i18n.language, {
-                      day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
-                    })}
-                  </span>
-                  <button
-                    onClick={async (e) => {
-                      e.stopPropagation()
-                      const next = await window.guignol.highlights.remove(id, h.text)
-                      setHighlights(next)
-                    }}
-                    aria-label={t('articleDetail.removeHighlightAria')}
-                    className="invisible group-hover:visible p-1 text-fg-muted hover:text-red-500 rounded"
-                  >
-                    <Trash2 size={13} strokeWidth={2} aria-hidden />
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </aside>
+        </SheetContent>
+      </Sheet>
 
-      <button
+      <Button
+        variant="default"
         onClick={summarize}
         disabled={summarizing}
         aria-label={article.summary ? t('articleDetail.regenerate') : t('articleDetail.summaryAi')}
-        className="fixed bottom-8 right-8 z-30 inline-flex items-center gap-2 px-5 py-3 rounded-full text-[14px] font-medium text-bg bg-accent hover:bg-accent-dim shadow-xl transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+        className="fixed bottom-8 right-8 z-30 rounded-full px-5 py-3 h-auto shadow-xl"
       >
         {summarizing ? (
           <Loader2 size={16} strokeWidth={2} aria-hidden className="animate-spin" />
@@ -494,7 +478,7 @@ export default function ArticleDetail({ id, onPatched, feeds }: Props): JSX.Elem
           <Sparkles size={16} strokeWidth={2} aria-hidden />
         )}
         <span>{summarizing ? t('articleDetail.generating') : article.summary ? t('articleDetail.regenerate') : t('articleDetail.summaryAi')}</span>
-      </button>
+      </Button>
     </article>
   )
 }

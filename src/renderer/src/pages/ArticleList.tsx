@@ -1,7 +1,6 @@
 import { Link, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import type { ArticleMeta, Feed } from '../../../shared/types'
-import { colorForFeed } from '../util/color'
 
 interface Props {
   articles: ArticleMeta[]
@@ -31,7 +30,6 @@ export default function ArticleList({ articles, feeds }: Props): JSX.Element {
       {sorted.map((a) => {
         const d = new Date(a.published)
         const isActive = activeId === a.id
-        const feedColor = colorForFeed(a.feed)
         return (
           <li
             key={a.id}
@@ -40,14 +38,10 @@ export default function ArticleList({ articles, feeds }: Props): JSX.Element {
             {isActive && <span className="absolute right-0 top-0 bottom-0 w-[3px] bg-accent" />}
             <Link
               to={`/article/${a.id}`}
-              className={`block py-3.5 pl-6 pr-8 border-l-[3px] transition-opacity ${a.read ? 'opacity-45 hover:opacity-70' : 'opacity-100'}`}
-              style={{ borderColor: feedColor }}
+              className={`block py-3.5 pl-6 pr-8 transition-opacity ${a.read ? 'opacity-45 hover:opacity-70' : 'opacity-100'}`}
             >
               <div className="mb-1">
-                <span
-                  className="text-[11px] uppercase tracking-caps font-semibold"
-                  style={{ color: feedColor }}
-                >
+                <span className="text-[11px] uppercase tracking-caps font-semibold text-fg-muted">
                   {feedTitleBySlug(a.feed)}
                 </span>
               </div>

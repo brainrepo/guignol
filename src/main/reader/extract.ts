@@ -32,6 +32,22 @@ const turndown = new TurndownService({
 })
 
 /**
+ * Anchors that wrap block elements (headings, paragraphs, divs) cause Turndown
+ * to emit `[\n\ntext\n\n](url)` — ReactMarkdown can't parse a link split across
+ * paragraphs, so the brackets render as literals. Collapse internal whitespace
+ * so link text stays on one line.
+ */
+turndown.addRule('flattenLinks', {
+  filter: (node) => node.nodeName === 'A' && !!node.getAttribute('href'),
+  replacement: (content, node) => {
+    const href = (node as HTMLElement).getAttribute('href') ?? ''
+    const text = content.replace(/\s+/g, ' ').trim()
+    if (!text) return ''
+    return `[${text}](${href})`
+  }
+})
+
+/**
  * HTTP headers for the reader fetch. We pretend to be Chrome arriving from
  * Google search, which maximizes success on two common classes of target:
  *   - CDN edges (Cloudflare/Akamai) that 403 unknown UAs

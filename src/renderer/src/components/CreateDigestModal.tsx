@@ -1,7 +1,25 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Sparkles } from 'lucide-react'
 import type { DigestDoc, DigestScope, Feed } from '../../../shared/types'
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle
+} from './ui/dialog'
+import { Button } from './ui/button'
+import { Input } from './ui/input'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from './ui/select'
+import { ToggleGroup, ToggleGroupItem } from './ui/toggle-group'
+import { Label } from './ui/label'
 
 interface Props {
   open: boolean
@@ -19,7 +37,7 @@ const PRESETS: { key: string; days: number }[] = [
   { key: 'createDigest.presetLast30days', days: 30 }
 ]
 
-export default function CreateDigestModal({ open, onClose, onCreated, feeds }: Props): JSX.Element | null {
+export default function CreateDigestModal({ open, onClose, onCreated, feeds }: Props): JSX.Element {
   const { t } = useTranslation()
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -27,7 +45,6 @@ export default function CreateDigestModal({ open, onClose, onCreated, feeds }: P
   const [scopeKind, setScopeKind] = useState<ScopeKind>('all')
   const [scopeFolder, setScopeFolder] = useState('')
   const [scopeFeedSlug, setScopeFeedSlug] = useState('')
-  const inputRef = useRef<HTMLInputElement>(null)
 
   const folders = useMemo(() => {
     const set = new Set<string>()
@@ -41,16 +58,6 @@ export default function CreateDigestModal({ open, onClose, onCreated, feeds }: P
   )
 
   useEffect(() => {
-    if (!open) return
-    const onKey = (e: KeyboardEvent): void => {
-      if (e.key === 'Escape' && !busy) onClose()
-    }
-    window.addEventListener('keydown', onKey)
-    const id = window.setTimeout(() => inputRef.current?.focus(), 20)
-    return () => { window.removeEventListener('keydown', onKey); window.clearTimeout(id) }
-  }, [open, onClose, busy])
-
-  useEffect(() => {
     if (!open) {
       setError(null)
       setBusy(false)
@@ -60,8 +67,6 @@ export default function CreateDigestModal({ open, onClose, onCreated, feeds }: P
       setScopeFeedSlug('')
     }
   }, [open])
-
-  if (!open) return null
 
   const buildScope = (): DigestScope => {
     if (scopeKind === 'folder' && scopeFolder) return { kind: 'folder', name: scopeFolder }
@@ -92,115 +97,86 @@ export default function CreateDigestModal({ open, onClose, onCreated, feeds }: P
     }
   }
 
-  const segBtn = (active: boolean): string =>
-    `px-3 py-1.5 text-[12px] uppercase tracking-caps transition-colors ${active
-      ? 'text-fg bg-bg-hover'
-      : 'text-fg-muted hover:text-fg'}`
-
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-start justify-center pt-28 bg-black/45 backdrop-blur-sm animate-[fade-in_120ms_ease-out]"
-      onMouseDown={() => !busy && onClose()}
-    >
-      <form
-        onSubmit={submit}
-        onMouseDown={(e) => e.stopPropagation()}
-        className="bg-bg-panel border border-fg-faint rounded-lg w-[480px] max-w-[90vw] shadow-[0_20px_50px_rgba(0,0,0,0.3)] overflow-hidden"
-      >
-        <header className="px-6 pt-6 pb-1">
-          <div className="label mb-1">{t('createDigest.label')}</div>
-          <h2 className="font-serif text-2xl font-normal tracking-tight text-fg m-0">
-            {t('createDigest.title')}
-          </h2>
-        </header>
+    <Dialog open={open} onOpenChange={(v) => { if (!v && !busy) onClose() }}>
+      <DialogContent className="sm:max-w-[480px]">
+        <DialogHeader>
+          <div className="label">{t('createDigest.label')}</div>
+          <DialogTitle>{t('createDigest.title')}</DialogTitle>
+        </DialogHeader>
 
-        <div className="px-6 py-5 space-y-5">
-          <div>
-            <label className="label block mb-2">{t('createDigest.scopeLabel')}</label>
-            <div className="inline-flex rounded-md border border-fg-faint overflow-hidden">
-              <button
-                type="button"
-                onClick={() => setScopeKind('all')}
-                className={segBtn(scopeKind === 'all')}
-                disabled={busy}
-              >
-                {t('createDigest.scopeAll')}
-              </button>
-              <button
-                type="button"
-                onClick={() => setScopeKind('folder')}
-                className={`${segBtn(scopeKind === 'folder')} border-l border-fg-faint`}
-                disabled={busy || folders.length === 0}
-                title={folders.length === 0 ? t('feedList.uncategorized') : undefined}
-              >
+        <form onSubmit={submit} className="flex flex-col gap-5">
+          <div className="flex flex-col gap-2">
+            <Label>{t('createDigest.scopeLabel')}</Label>
+            <ToggleGroup
+              type="single"
+              value={scopeKind}
+              onValueChange={(v) => v && setScopeKind(v as ScopeKind)}
+              disabled={busy}
+            >
+              <ToggleGroupItem value="all">{t('createDigest.scopeAll')}</ToggleGroupItem>
+              <ToggleGroupItem value="folder" disabled={folders.length === 0}>
                 {t('createDigest.scopeFolder')}
-              </button>
-              <button
-                type="button"
-                onClick={() => setScopeKind('feed')}
-                className={`${segBtn(scopeKind === 'feed')} border-l border-fg-faint`}
-                disabled={busy || feeds.length === 0}
-              >
+              </ToggleGroupItem>
+              <ToggleGroupItem value="feed" disabled={feeds.length === 0}>
                 {t('createDigest.scopeFeed')}
-              </button>
-            </div>
+              </ToggleGroupItem>
+            </ToggleGroup>
             {scopeKind === 'folder' && (
-              <select
-                value={scopeFolder}
-                onChange={(e) => setScopeFolder(e.target.value)}
-                disabled={busy}
-                className="mt-3 w-full text-[14px] py-2 bg-transparent text-fg border-b border-fg-faint focus:border-accent transition-colors"
-              >
-                <option value="">{t('createDigest.scopePickFolder')}</option>
-                {folders.map((name) => (
-                  <option key={name} value={name}>{name}</option>
-                ))}
-              </select>
+              <Select value={scopeFolder} onValueChange={setScopeFolder} disabled={busy}>
+                <SelectTrigger>
+                  <SelectValue placeholder={t('createDigest.scopePickFolder')} />
+                </SelectTrigger>
+                <SelectContent>
+                  {folders.map((name) => (
+                    <SelectItem key={name} value={name}>{name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             )}
             {scopeKind === 'feed' && (
-              <select
-                value={scopeFeedSlug}
-                onChange={(e) => setScopeFeedSlug(e.target.value)}
-                disabled={busy}
-                className="mt-3 w-full text-[14px] py-2 bg-transparent text-fg border-b border-fg-faint focus:border-accent transition-colors"
-              >
-                <option value="">{t('createDigest.scopePickFeed')}</option>
-                {sortedFeeds.map((f) => (
-                  <option key={f.slug} value={f.slug}>{f.title}</option>
-                ))}
-              </select>
+              <Select value={scopeFeedSlug} onValueChange={setScopeFeedSlug} disabled={busy}>
+                <SelectTrigger>
+                  <SelectValue placeholder={t('createDigest.scopePickFeed')} />
+                </SelectTrigger>
+                <SelectContent>
+                  {sortedFeeds.map((f) => (
+                    <SelectItem key={f.slug} value={f.slug}>{f.title}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             )}
           </div>
 
-          <div>
-            <label className="label block mb-2">{t('createDigest.fromDate')}</label>
-            <input
-              ref={inputRef}
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="digest-from">{t('createDigest.fromDate')}</Label>
+            <Input
+              id="digest-from"
               type="date"
               value={fromDate}
               onChange={(e) => setFromDate(e.target.value)}
               disabled={busy}
               max={new Date().toISOString().slice(0, 10)}
-              className="w-full text-[15px] py-2 text-fg border-b border-fg-faint focus:border-accent transition-colors"
             />
-          </div>
-
-          <div className="flex flex-wrap gap-1.5">
-            {PRESETS.map((p) => (
-              <button
-                key={p.days}
-                type="button"
-                onClick={() => setFromDate(defaultFromDate(p.days))}
-                disabled={busy}
-                className="px-2.5 py-1 text-[12px] rounded-full text-fg-dim hover:text-fg hover:bg-bg-hover border border-fg-faint transition-colors"
-              >
-                {t(p.key)}
-              </button>
-            ))}
+            <div className="flex flex-wrap gap-1.5 mt-1">
+              {PRESETS.map((p) => (
+                <Button
+                  key={p.days}
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setFromDate(defaultFromDate(p.days))}
+                  disabled={busy}
+                  className="rounded-full"
+                >
+                  {t(p.key)}
+                </Button>
+              ))}
+            </div>
           </div>
 
           {error && (
-            <div className="text-xs text-red-500 break-words">{error}</div>
+            <div className="text-xs text-destructive break-words">{error}</div>
           )}
           {busy && (
             <div className="text-xs text-fg-muted flex items-center gap-2">
@@ -208,28 +184,19 @@ export default function CreateDigestModal({ open, onClose, onCreated, feeds }: P
               {t('createDigest.busy')}
             </div>
           )}
-        </div>
 
-        <footer className="flex items-center justify-end gap-1 px-4 py-3 bg-bg-alt border-t border-fg-faint">
-          <button
-            type="button"
-            onClick={onClose}
-            disabled={busy}
-            className="px-3 py-1.5 text-xs uppercase tracking-caps text-fg-dim rounded hover:text-fg hover:bg-bg-hover"
-          >
-            {t('createDigest.cancel')}
-          </button>
-          <button
-            type="submit"
-            disabled={!canSubmit()}
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[13px] font-medium text-bg bg-accent hover:bg-accent-dim transition-colors disabled:opacity-40"
-          >
-            <Sparkles size={14} strokeWidth={2} aria-hidden />
-            {busy ? t('createDigest.generating') : t('createDigest.submit')}
-          </button>
-        </footer>
-      </form>
-    </div>
+          <DialogFooter>
+            <Button type="button" variant="ghost" onClick={onClose} disabled={busy}>
+              {t('createDigest.cancel')}
+            </Button>
+            <Button type="submit" variant="default" disabled={!canSubmit()} className="rounded-full">
+              <Sparkles size={14} strokeWidth={2} aria-hidden />
+              {busy ? t('createDigest.generating') : t('createDigest.submit')}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
   )
 }
 

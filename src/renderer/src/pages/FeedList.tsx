@@ -1,25 +1,34 @@
 import { useMemo, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { ChevronRight, FolderPlus, Highlighter, Newspaper, X } from 'lucide-react'
+import { ChevronRight, FolderPlus, Plus, Rss, X } from 'lucide-react'
 import {
   DndContext,
   PointerSensor,
+  closestCenter,
   useSensor,
   useSensors,
   useDraggable,
   useDroppable,
   type DragEndEvent
 } from '@dnd-kit/core'
-import type { Feed } from '../../../shared/types'
-import { colorForFeed } from '../util/color'
+import { CSS } from '@dnd-kit/utilities'
+import type { ArticleMeta, Feed } from '../../../shared/types'
 import PromptModal from '../components/PromptModal'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from '../components/ui/dropdown-menu'
 
 interface Props {
   feeds: Feed[]
+  articles: ArticleMeta[]
   selected: string | null
   onSelect: (slug: string | null) => void
   onChanged: () => void
+  onAddFeed: () => void
 }
 
 const COLLAPSED_KEY = 'feedList.collapsed'
@@ -57,7 +66,7 @@ function writeKnownFolders(list: string[]): void {
   try { localStorage.setItem(KNOWN_FOLDERS_KEY, JSON.stringify(list)) } catch { /* quota */ }
 }
 
-export default function FeedList({ feeds, selected, onSelect, onChanged }: Props): JSX.Element {
+export default function FeedList({ feeds, articles, selected, onSelect, onChanged, onAddFeed }: Props): JSX.Element {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const location = useLocation()
@@ -81,6 +90,16 @@ export default function FeedList({ feeds, selected, onSelect, onChanged }: Props
       return next
     })
   }
+
+  const unreadByFeed = useMemo(() => {
+    const m = new Map<string, number>()
+    for (const a of articles) if (!a.read) m.set(a.feed, (m.get(a.feed) ?? 0) + 1)
+    return m
+  }, [articles])
+  const totalUnread = useMemo(
+    () => articles.reduce((n, a) => n + (a.read ? 0 : 1), 0),
+    [articles]
+  )
 
   const { folderGroups, uncategorized } = useMemo(() => {
     const byFolder = new Map<string, Feed[]>()
@@ -143,68 +162,69 @@ export default function FeedList({ feeds, selected, onSelect, onChanged }: Props
 
   const handleDragEnd = async (ev: DragEndEvent): Promise<void> => {
     const feedUrl = ev.active.data.current?.feedUrl as string | undefined
-    const targetFolder = ev.over?.data.current?.folder as string | null | undefined
     if (!feedUrl || ev.over == null) return
+    const targetFolder = ev.over.data.current?.folder as string | null | undefined
     await window.guignol.feeds.setFolder(feedUrl, targetFolder ?? null)
-    onChanged()
+    await Promise.resolve(onChanged())
   }
 
   const itemBase = 'group flex items-center gap-2.5 px-6 py-2 cursor-pointer text-[13px] relative'
 
   return (
-    <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
       <div>
-        <ul className="m-0 p-0 list-none pt-4">
-          <li
-            className={`${itemBase} ${onHighlights ? 'text-fg font-semibold' : 'text-fg-dim hover:text-fg'}`}
+        <ul className="m-0 p-0 list-none pt-4 pb-2">
+          <EditorialNavItem
+            numeral="I."
+            label={t('feedList.highlights')}
+            active={onHighlights}
             onClick={() => navigate('/highlights')}
-          >
-            <Highlighter
-              size={14}
-              strokeWidth={2}
-              aria-hidden
-              className="shrink-0"
-              style={{ color: 'rgba(200, 144, 28, 0.85)' }}
-            />
-            <span className="flex-1 min-w-0 truncate">{t('feedList.highlights')}</span>
-            {onHighlights && <span className="absolute left-0 top-0 bottom-0 w-0.5 bg-accent" />}
-          </li>
-          <li
-            className={`${itemBase} ${onDigests ? 'text-fg font-semibold' : 'text-fg-dim hover:text-fg'}`}
+          />
+          <EditorialNavItem
+            numeral="II."
+            label={t('feedList.digests')}
+            active={onDigests}
             onClick={() => navigate('/digests')}
-          >
-            <Newspaper
-              size={14}
-              strokeWidth={2}
-              aria-hidden
-              className="shrink-0 text-accent"
-            />
-            <span className="flex-1 min-w-0 truncate">{t('feedList.digests')}</span>
-            {onDigests && <span className="absolute left-0 top-0 bottom-0 w-0.5 bg-accent" />}
-          </li>
+          />
         </ul>
 
-        <div className="flex items-center gap-2 px-6 pt-4 pb-1">
-          <div className="label flex-1">{t('feedList.feeds')}</div>
-          <button
-            onClick={() => setPromptKind({ mode: 'new' })}
-            aria-label={t('feedList.newFolder')}
-            title={t('feedList.newFolder')}
-            className="p-0.5 text-fg-muted hover:text-accent transition-colors"
-          >
-            <FolderPlus size={13} strokeWidth={2} aria-hidden />
-          </button>
-        </div>
-        <ul className="m-0 p-0 list-none">
+        <ul className="m-0 p-0 list-none mt-2 border-t border-white/10 pt-2">
+          <EditorialNavItem
+            numeral="III."
+            label={t('feedList.feeds')}
+            active={!notOnArticles}
+            onClick={() => { if (notOnArticles) navigate('/'); onSelect(null) }}
+            trailing={
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    onClick={(e) => e.stopPropagation()}
+                    aria-label={t('feedList.addMenuLabel', 'Add')}
+                    title={t('feedList.addMenuLabel', 'Add')}
+                    className="h-12 w-12 -translate-y-10 rounded-full bg-slate-100 text-slate-800 flex items-center justify-center shadow-md hover:bg-white hover:scale-110 active:scale-95 transition-all"
+                  >
+                    <Plus size={24} strokeWidth={2.5} aria-hidden />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onSelect={() => onAddFeed()}>
+                    <Rss size={12} strokeWidth={2} aria-hidden />
+                    {t('feedList.addFeed', 'Add feed')}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onSelect={() => setPromptKind({ mode: 'new' })}>
+                    <FolderPlus size={12} strokeWidth={2} aria-hidden />
+                    {t('feedList.newFolder')}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            }
+          />
           <li
             className={`${itemBase} ${!notOnArticles && selected === null ? 'text-fg font-semibold' : 'text-fg-dim hover:text-fg'}`}
             onClick={() => { if (notOnArticles) navigate('/'); onSelect(null) }}
           >
-            <span
-              className="w-2 h-2 rounded-full shrink-0"
-              style={{ background: 'var(--color-fg-muted)' }}
-            />
             <span className="flex-1 min-w-0 truncate">{t('feedList.all')}</span>
+            <UnreadCount n={totalUnread} />
             {!notOnArticles && selected === null && (
               <span className="absolute left-0 top-0 bottom-0 w-0.5 bg-accent" />
             )}
@@ -212,12 +232,16 @@ export default function FeedList({ feeds, selected, onSelect, onChanged }: Props
 
           {folderGroups.map((group) => {
             const isCollapsed = collapsed[group.name] === true
+            const folderUnread = group.items.reduce(
+              (n, f) => n + (unreadByFeed.get(f.slug) ?? 0),
+              0
+            )
             return (
               <FolderSection
                 key={group.name}
                 dropId={folderDropId(group.name)}
                 folderName={group.name}
-                count={group.items.length}
+                count={folderUnread}
                 collapsed={isCollapsed}
                 onToggle={() => toggleCollapse(group.name)}
                 onRename={() => setPromptKind({ mode: 'rename', name: group.name })}
@@ -228,6 +252,7 @@ export default function FeedList({ feeds, selected, onSelect, onChanged }: Props
                     key={f.url}
                     feed={f}
                     active={!notOnArticles && selected === f.slug}
+                    unread={unreadByFeed.get(f.slug) ?? 0}
                     itemBase={itemBase}
                     indent
                     onClick={() => { if (notOnArticles) navigate('/'); onSelect(f.slug) }}
@@ -249,6 +274,7 @@ export default function FeedList({ feeds, selected, onSelect, onChanged }: Props
                 key={f.url}
                 feed={f}
                 active={!notOnArticles && selected === f.slug}
+                unread={unreadByFeed.get(f.slug) ?? 0}
                 itemBase={itemBase}
                 onClick={() => { if (notOnArticles) navigate('/'); onSelect(f.slug) }}
                 onRemove={() => handleRemove(f.url)}
@@ -304,10 +330,9 @@ function FolderSection({
   const { t } = useTranslation()
   const { setNodeRef, isOver } = useDroppable({ id: dropId, data: { folder: folderName } })
   return (
-    <>
-      <li
-        ref={setNodeRef}
-        className={`group flex items-center gap-2 px-6 pt-3 pb-1 cursor-pointer select-none text-fg-muted hover:text-fg transition-colors ${isOver ? 'bg-accent/10 text-accent' : ''}`}
+    <li ref={setNodeRef} className={`list-none ${isOver ? 'bg-accent/10' : ''} transition-colors`}>
+      <div
+        className={`group flex items-center gap-2 px-6 pt-3 pb-1 cursor-pointer select-none text-fg-muted hover:text-fg transition-colors ${isOver ? 'text-accent' : ''}`}
         onClick={onToggle}
       >
         <ChevronRight
@@ -319,7 +344,8 @@ function FolderSection({
         <span className="label flex-1 min-w-0 truncate normal-case tracking-normal font-semibold text-[11px]">
           {folderName}
         </span>
-        <span className="text-[10px] text-fg-muted font-mono tabular-nums">{count}</span>
+        <UnreadCount n={count} />
+
         <button
           onClick={(e) => { e.stopPropagation(); onRename() }}
           aria-label={t('feedList.renameFolder')}
@@ -336,9 +362,9 @@ function FolderSection({
         >
           <X size={12} strokeWidth={2} aria-hidden />
         </button>
-      </li>
-      {!collapsed && children}
-    </>
+      </div>
+      {!collapsed && <ul className="m-0 p-0 list-none">{children}</ul>}
+    </li>
   )
 }
 
@@ -359,14 +385,20 @@ function UncategorizedZone({
   })
   return (
     <>
-      {hasFolders && (
+      {hasFolders && hasItems && (
         <li
           ref={setNodeRef}
           className={`list-none px-6 pt-3 pb-1 transition-colors ${isOver ? 'bg-accent/10' : ''}`}
         >
           <div className="label">{label}</div>
-          {!hasItems && <div className="mt-1 text-[11px] italic text-fg-muted">—</div>}
         </li>
+      )}
+      {hasFolders && !hasItems && (
+        <li
+          ref={setNodeRef}
+          aria-hidden
+          className={`list-none h-3 transition-colors ${isOver ? 'bg-accent/10' : ''}`}
+        />
       )}
       {children}
     </>
@@ -376,33 +408,40 @@ function UncategorizedZone({
 function DraggableFeedRow(props: {
   feed: Feed
   active: boolean
+  unread: number
   itemBase: string
   indent?: boolean
   onClick: () => void
   onRemove: () => void
   removeLabel: string
 }): JSX.Element {
-  const { feed, active, itemBase, indent = false, onClick, onRemove, removeLabel } = props
-  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
+  const { feed, active, unread, itemBase, indent = false, onClick, onRemove, removeLabel } = props
+  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: feed.url,
     data: { feedUrl: feed.url }
   })
+  const dragStyle: React.CSSProperties = {
+    transform: CSS.Translate.toString(transform),
+    zIndex: isDragging ? 50 : undefined,
+    boxShadow: isDragging ? '0 8px 24px rgba(0,0,0,0.25)' : undefined,
+    background: isDragging ? 'var(--color-bg-hover)' : undefined,
+    borderRadius: isDragging ? 6 : undefined,
+    cursor: isDragging ? 'grabbing' : 'grab'
+  }
   return (
     <li
       ref={setNodeRef}
       {...attributes}
       {...listeners}
-      className={`${itemBase} ${indent ? 'pl-9' : ''} ${active ? 'text-fg font-semibold' : 'text-fg-dim hover:text-fg'} ${isDragging ? 'opacity-40' : ''}`}
+      style={dragStyle}
+      className={`${itemBase} ${indent ? 'pl-9' : ''} ${active ? 'text-fg font-semibold' : 'text-fg-dim hover:text-fg'}`}
       onClick={onClick}
       title={feed.lastError ?? ''}
       data-feed-url={feed.url}
     >
-      <span
-        className="w-2 h-2 rounded-full shrink-0"
-        style={{ background: colorForFeed(feed.slug) }}
-      />
       <span className="flex-1 min-w-0 truncate">{feed.title}</span>
       {feed.lastError && <span className="text-red-500 font-bold">!</span>}
+      <UnreadCount n={unread} />
       <button
         onClick={(e) => { e.stopPropagation(); onRemove() }}
         onPointerDown={(e) => e.stopPropagation()}
@@ -413,5 +452,49 @@ function DraggableFeedRow(props: {
       </button>
       {active && <span className="absolute left-0 top-0 bottom-0 w-0.5 bg-accent" />}
     </li>
+  )
+}
+
+function EditorialNavItem({
+  numeral,
+  label,
+  active,
+  onClick,
+  trailing
+}: {
+  numeral: string
+  label: string
+  active: boolean
+  onClick: () => void
+  trailing?: React.ReactNode
+}): JSX.Element {
+  return (
+    <li
+      onClick={onClick}
+      className={`relative flex items-baseline gap-3 px-6 py-2 cursor-pointer select-none transition-colors ${
+        active ? 'text-fg font-medium' : 'text-fg-dim hover:text-fg'
+      }`}
+    >
+      <span className="font-mono text-[10px] tracking-wider text-fg-muted w-5 shrink-0">
+        {numeral}
+      </span>
+      <span
+        className="font-serif text-[17px] tracking-tight leading-tight flex-1 min-w-0 truncate"
+        style={{ fontVariationSettings: '"opsz" 16' }}
+      >
+        {label}
+      </span>
+      {trailing}
+      {active && <span className="absolute left-0 top-2.5 bottom-2.5 w-0.5 bg-fg" />}
+    </li>
+  )
+}
+
+function UnreadCount({ n }: { n: number }): JSX.Element | null {
+  if (n <= 0) return null
+  return (
+    <span className="text-[10px] font-mono tabular-nums text-fg-muted shrink-0">
+      {n}
+    </span>
   )
 }

@@ -1,7 +1,9 @@
-import { readFile, writeFile, mkdir, access, rename } from 'node:fs/promises'
+import { readFile, writeFile, mkdir, access, rename, rm } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import type { Feed, FeedsFile } from '../../shared/types.js'
-import { feedsFilePath, vaultRoot, feedSlug } from '../vault/paths.js'
+import { feedDir, feedsFilePath, vaultRoot, feedSlug } from '../vault/paths.js'
+import { getMetaByFeed, removeMeta } from '../vault/index.js'
+import { log } from '../log.js'
 
 async function ensureVault(): Promise<void> {
   await mkdir(vaultRoot(), { recursive: true })
@@ -50,8 +52,17 @@ export async function addFeed(url: string, title: string): Promise<Feed> {
 
 export async function removeFeed(url: string): Promise<void> {
   const data = await readFeedsFile()
+  const target = data.feeds.find((f) => f.url === url)
   data.feeds = data.feeds.filter((f) => f.url !== url)
   await writeFeedsFile(data)
+  if (target) {
+    const stale = getMetaByFeed(target.slug)
+    for (const meta of stale) {
+      removeMeta(meta.id)
+    }
+    await rm(feedDir(target.slug), { recursive: true, force: true })
+    log.info('feeds', `removed "${target.title}" (${stale.length} articles, dir ${feedDir(target.slug)})`)
+  }
 }
 
 export async function updateFeed(url: string, patch: Partial<Feed>): Promise<void> {

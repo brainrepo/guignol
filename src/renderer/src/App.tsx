@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { CheckCheck, PanelLeft, PanelLeftClose, Plus, RefreshCw, Settings as SettingsIcon } from 'lucide-react'
+import { CheckCheck, PanelLeft, PanelLeftClose, RefreshCw, Settings as SettingsIcon } from 'lucide-react'
 import i18n from './i18n'
+import { Button } from './components/ui/button'
 import type { ArticleMeta, Feed, Theme } from '../../shared/types'
 import FeedList from './pages/FeedList'
 import ArticleList from './pages/ArticleList'
@@ -85,10 +86,9 @@ export default function App(): JSX.Element {
     : null
   const unreadCount = visibleArticles.filter((a) => !a.read).length
 
-  const railCol = sidebarOpen ? '80px' : '48px'
   const sideCol = sidebarOpen ? `${sideWidth}px` : '0px'
   const middleCol = fullWidthRoute ? '0px' : `${middleWidth}px`
-  const gridTemplateColumns = `${railCol} ${sideCol} ${middleCol} 1fr`
+  const gridTemplateColumns = `${sideCol} ${middleCol} 1fr`
 
   useEffect(() => { localStorage.setItem('sideWidth', String(sideWidth)) }, [sideWidth])
   useEffect(() => { localStorage.setItem('middleWidth', String(middleWidth)) }, [middleWidth])
@@ -120,39 +120,42 @@ export default function App(): JSX.Element {
 
   return (
     <div
-      className="grid h-screen bg-bg transition-[grid-template-columns] duration-200 ease-[cubic-bezier(0.4,0,0.2,1)]"
-      style={{ gridTemplateColumns }}
+      className="grid h-screen bg-bg"
+      style={{ gridTemplateRows: 'auto 1fr' }}
     >
-      <div
+      <header
         data-surface="accent"
-        className="rail flex flex-col items-center pt-8 pb-6"
+        className="topbar flex items-center justify-between gap-4 pl-24 pr-4 h-11"
         style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}
       >
-        <div className="flex-1 flex items-center justify-center">
-          <div className="rail-brand">Guignol</div>
-        </div>
-        <SettingsRailButton />
-        <button
-          onClick={() => setAddFeedOpen(true)}
-          aria-label={t('app.addFeed')}
-          title={t('app.addFeedTooltip')}
-          className="mt-2 w-9 h-9 flex items-center justify-center rounded-full bg-white/15 text-white hover:bg-white/25 transition-colors"
+        <div className="brand">Guignol</div>
+        <div
+          className="flex items-center"
           style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
         >
-          <Plus size={18} strokeWidth={2.25} aria-hidden />
-        </button>
-      </div>
+          <SettingsRailButton />
+        </div>
+      </header>
 
+      <div
+        className="grid overflow-hidden transition-[grid-template-columns] duration-200 ease-[cubic-bezier(0.4,0,0.2,1)]"
+        style={{ gridTemplateColumns }}
+      >
       <aside
         data-surface="accent"
-        className={`relative pt-8 pb-5 overflow-x-hidden overflow-y-auto ${sidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none overflow-hidden'} transition-opacity duration-150`}
+        className={`relative overflow-x-hidden ${sidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none overflow-hidden'} transition-opacity duration-150`}
       >
-        <FeedList
-          feeds={feeds}
-          selected={selectedFeed}
-          onSelect={setSelectedFeed}
-          onChanged={reload}
-        />
+        <div className="h-full overflow-y-auto pt-8 pb-20">
+          <FeedList
+            feeds={feeds}
+            articles={articles}
+            selected={selectedFeed}
+            onSelect={setSelectedFeed}
+            onChanged={reload}
+            onAddFeed={() => setAddFeedOpen(true)}
+          />
+        </div>
+        <SidebarSettingsLink />
         {sidebarOpen && (
           <ResizeHandle
             onMouseDown={startResize(() => sideWidth, setSideWidth, 180, 420)}
@@ -207,6 +210,7 @@ export default function App(): JSX.Element {
           <Route path="/settings" element={<Settings onChanged={reload} />} />
         </Routes>
       </section>
+      </div>
 
       <AddFeedModal
         open={addFeedOpen}
@@ -232,29 +236,47 @@ function TopBar({
   onMarkAllRead: () => void
 }): JSX.Element {
   const { t } = useTranslation()
-  const btn = 'inline-flex items-center gap-1.5 px-2.5 py-1.5 text-[13px] text-fg-dim rounded hover:text-fg hover:bg-bg-hover disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-fg-dim'
   return (
     <div className="flex items-center gap-1 px-8 pt-8 pb-4 justify-end">
-      <button
+      <Button
+        variant="ghost"
+        size="icon"
         onClick={onToggleSidebar}
         aria-label={sidebarOpen ? t('app.hideSidebar') : t('app.showSidebar')}
         title={sidebarOpen ? t('app.hideSidebarTooltip') : t('app.showSidebarTooltip')}
-        className="p-1.5 text-fg-muted rounded hover:text-fg hover:bg-bg-hover mr-auto"
+        className="mr-auto text-fg-muted"
       >
         {sidebarOpen ? <PanelLeftClose size={16} strokeWidth={2} aria-hidden /> : <PanelLeft size={16} strokeWidth={2} aria-hidden />}
-      </button>
-      <button
+      </Button>
+      <Button
+        variant="ghost"
+        size="sm"
         onClick={onMarkAllRead}
         disabled={unreadCount === 0}
         title={t('app.markAllReadTooltip')}
-        className={btn}
       >
         <CheckCheck size={14} strokeWidth={2} aria-hidden /> {t('app.markAllRead')}
-      </button>
-      <button onClick={onRefresh} className={btn}>
+      </Button>
+      <Button variant="ghost" size="sm" onClick={onRefresh}>
         <RefreshCw size={14} strokeWidth={2} aria-hidden /> {t('app.refresh')}
-      </button>
+      </Button>
     </div>
+  )
+}
+
+function SidebarSettingsLink(): JSX.Element {
+  const { t } = useTranslation()
+  const navigate = useNavigate()
+  const location = useLocation()
+  const active = location.pathname === '/settings'
+  return (
+    <button
+      onClick={() => navigate(active ? '/' : '/settings')}
+      className={`absolute bottom-0 left-0 right-0 px-6 py-4 flex items-center gap-2 text-[13px] font-medium border-t border-fg/10 transition-colors ${active ? 'text-fg bg-fg/5' : 'text-fg/60 hover:text-fg hover:bg-fg/5'}`}
+    >
+      <SettingsIcon size={13} strokeWidth={2} aria-hidden />
+      <span>{t('app.settings')}</span>
+    </button>
   )
 }
 
@@ -264,15 +286,17 @@ function SettingsRailButton({ className = '' }: { className?: string }): JSX.Ele
   const location = useLocation()
   const active = location.pathname === '/settings'
   return (
-    <button
+    <Button
+      variant="ghost"
+      size="icon"
       onClick={() => navigate(active ? '/' : '/settings')}
       aria-label={t('app.settings')}
       title={t('app.settings')}
-      className={`${className} w-9 h-9 flex items-center justify-center rounded-full transition-colors ${active ? 'text-fg bg-bg-hover' : 'text-fg-muted hover:text-fg hover:bg-bg-hover'}`}
+      className={`${className} h-8 w-8 rounded-full transition-colors ${active ? 'text-fg bg-fg/15' : 'text-fg/70 hover:text-fg hover:bg-fg/10'}`}
       style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
     >
       <SettingsIcon size={16} strokeWidth={2} aria-hidden />
-    </button>
+    </Button>
   )
 }
 

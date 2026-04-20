@@ -5,7 +5,6 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { ArrowUpRight } from 'lucide-react'
 import type { DigestDoc, Feed } from '../../../shared/types'
-import { colorForFeed } from '../util/color'
 import ScopeBadge from '../components/ScopeBadge'
 
 interface Props { feeds: Feed[] }
@@ -116,10 +115,7 @@ export default function DigestDetail({ feeds }: Props): JSX.Element {
               className="group flex items-start gap-3 cursor-pointer py-2 px-3 -mx-3 rounded hover:bg-bg-alt transition-colors"
               onClick={() => navigate(`/article/${a.id}`)}
             >
-              <span
-                className="w-2 h-2 rounded-full shrink-0 mt-2"
-                style={{ background: colorForFeed(a.feed) }}
-              />
+              <span className="w-2 h-2 rounded-full shrink-0 mt-2 bg-fg-muted" />
               <div className="flex-1 min-w-0">
                 <div className="font-serif text-[15px] leading-snug text-fg group-hover:text-accent transition-colors">
                   {a.title}

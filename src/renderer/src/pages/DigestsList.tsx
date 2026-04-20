@@ -5,6 +5,7 @@ import { Plus } from 'lucide-react'
 import type { DigestDoc, Feed } from '../../../shared/types'
 import CreateDigestModal from '../components/CreateDigestModal'
 import ScopeBadge from '../components/ScopeBadge'
+import { Button } from '../components/ui/button'
 
 interface Props {
   feeds: Feed[]
@@ -38,13 +39,15 @@ export default function DigestsList({ feeds }: Props): JSX.Element {
             {loading ? '…' : t('digestsList.count', { count: docs.length })}
           </div>
         </div>
-        <button
+        <Button
+          variant="default"
+          size="sm"
           onClick={() => setModalOpen(true)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-medium text-bg bg-accent hover:bg-accent-dim transition-colors"
+          className="rounded-full"
         >
           <Plus size={13} strokeWidth={2.25} aria-hidden />
           {t('digestsList.newButton')}
-        </button>
+        </Button>
       </div>
 
       {loading && (
