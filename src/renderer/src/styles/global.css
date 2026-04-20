@@ -1,40 +1,40 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg: #f8fafc;
-  --color-bg-panel: #f1f4f8;
-  --color-bg-alt: #eef1f5;
-  --color-bg-hover: #e6eaf0;
-  --color-fg: #0f172a;
-  --color-fg-dim: #475569;
-  --color-fg-muted: #5a6778;
-  --color-fg-faint: #cfd6df;
-  --color-accent: #2d5a94;
-  --color-accent-dim: #3a6fb5;
-  --color-unread: #2d5a94;
+  --color-bg: #fafbfc;
+  --color-bg-panel: #eef1ec;
+  --color-bg-alt: #eef0eb;
+  --color-bg-hover: #e2e7de;
+  --color-fg: #0f1a14;
+  --color-fg-dim: #22302a;
+  --color-fg-muted: #5d6d65;
+  --color-fg-faint: #d2d8cf;
+  --color-accent: #1e3a5f;
+  --color-accent-dim: #2f4f7a;
+  --color-unread: #1e3a5f;
 
   --color-highlight: rgba(232, 184, 58, 0.38);
   --color-highlight-strong: rgba(232, 184, 58, 0.55);
   --color-highlight-border: rgba(200, 144, 28, 0.6);
 
-  --shadow-drawer: -8px 0 24px rgba(15, 23, 42, 0.08);
+  --shadow-drawer: -8px 0 24px rgba(15, 26, 20, 0.10);
 
-  --font-sans: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Inter', system-ui, sans-serif;
-  --font-serif: 'Iowan Old Style', 'Charter', 'Georgia', serif;
-  --font-mono: 'SF Mono', 'Menlo', 'Consolas', monospace;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-serif: 'Fraunces', 'Iowan Old Style', 'Charter', 'Georgia', serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', 'Menlo', 'Consolas', monospace;
 
-  --tracking-caps: 0.14em;
+  --tracking-caps: 0.22em;
 }
 
 [data-theme='dark'] {
   --color-bg: #0f1419;
-  --color-bg-panel: #161b22;
-  --color-bg-alt: #1a1f27;
-  --color-bg-hover: #21262d;
-  --color-fg: #e6edf3;
-  --color-fg-dim: #9da8b5;
-  --color-fg-muted: #8b95a3;
-  --color-fg-faint: #30363d;
+  --color-bg-panel: #141a22;
+  --color-bg-alt: #1a2029;
+  --color-bg-hover: #232b36;
+  --color-fg: #eaedf2;
+  --color-fg-dim: #c0c7d3;
+  --color-fg-muted: #6e7789;
+  --color-fg-faint: #2d343f;
   --color-accent: #5b9cee;
   --color-accent-dim: #4a85d4;
   --color-unread: #5b9cee;
@@ -79,54 +79,86 @@
 }
 
 @layer components {
-  /* Uppercase tracked label */
+  /* Navy "surface" — rail + sidebar share accent ground. Remap neutrals so
+     existing text-fg / text-fg-muted utilities render legibly on navy.      */
+  [data-surface='accent'] {
+    background: var(--color-accent);
+    color: #fff;
+    --color-fg: #ffffff;
+    --color-fg-dim: rgba(255, 255, 255, 0.82);
+    --color-fg-muted: rgba(255, 255, 255, 0.6);
+    --color-fg-faint: rgba(255, 255, 255, 0.18);
+    --color-bg-panel: color-mix(in oklab, #000 10%, var(--color-accent));
+    --color-bg-alt: rgba(255, 255, 255, 0.08);
+    --color-bg-hover: rgba(255, 255, 255, 0.10);
+  }
+
+  /* Uppercase tracked label — editorial kicker */
   .label {
-    font-size: 11px;
+    font-family: var(--font-sans);
+    font-size: 10px;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: var(--tracking-caps);
+    letter-spacing: 0.26em;
     color: var(--color-fg-muted);
-    font-weight: 500;
   }
 
-  /* Leftmost rail column */
+  /* Big editorial display — Fraunces at large opsz */
+  .display {
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-variation-settings: 'opsz' 96;
+    letter-spacing: -0.035em;
+    line-height: 1;
+    color: var(--color-fg);
+  }
+
+  /* Mono caps — range / date stamps */
+  .mono-caps {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--color-fg-muted);
+  }
+
+  /* Leftmost rail — now navy continuum with sidebar */
   .rail {
-    background: color-mix(in oklab, #000 5%, var(--color-bg-panel));
-    border-right: 1px solid var(--color-fg-faint);
-  }
-
-  [data-theme='dark'] .rail {
-    background: color-mix(in oklab, #000 15%, var(--color-bg-panel));
+    background: var(--color-accent);
+    border-right: none;
   }
 
   /* Vertical rotated brand in rail */
   .rail-brand {
-    font-family: var(--font-sans);
-    font-size: 10.5px;
+    font-family: var(--font-serif);
+    font-size: 12px;
     font-weight: 500;
+    font-style: italic;
     writing-mode: vertical-rl;
     transform: rotate(180deg);
-    letter-spacing: 0.45em;
+    letter-spacing: 0.25em;
     text-transform: uppercase;
-    color: var(--color-fg-muted);
-    font-feature-settings: 'ss01', 'ss02';
+    color: rgba(255, 255, 255, 0.75);
     padding-block: 6px;
   }
 
   /* Article body prose */
   .article-body {
     font-family: var(--font-serif);
-    font-size: 17px;
-    line-height: 1.75;
-    color: var(--color-fg);
+    font-size: 18px;
+    line-height: 1.62;
+    letter-spacing: -0.003em;
+    color: var(--color-fg-dim);
+    font-variation-settings: 'opsz' 14;
   }
-  .article-body p { margin: 1em 0; }
+  .article-body p { margin: 1em 0; text-wrap: pretty; }
   .article-body img { max-width: 100%; height: auto; border-radius: 4px; margin: 20px 0; }
   .article-body a { color: var(--color-accent); border-bottom: 1px solid var(--color-accent-dim); }
   .article-body a:hover {
     color: var(--color-bg); background: var(--color-accent); border-bottom-color: transparent;
   }
   .article-body pre {
-    background: var(--color-bg-panel);
+    background: var(--color-bg-alt);
     padding: 14px 16px;
     border-radius: 4px;
     overflow-x: auto;
@@ -136,16 +168,18 @@
   }
   .article-body code {
     font-family: var(--font-mono);
-    font-size: 0.88em;
+    font-size: 0.82em;
     background: var(--color-bg-alt);
     padding: 1px 6px;
     border-radius: 3px;
+    color: var(--color-accent);
   }
-  .article-body pre code { background: transparent; padding: 0; }
+  .article-body pre code { background: transparent; padding: 0; color: inherit; }
   .article-body h2, .article-body h3 {
     font-family: var(--font-serif);
     font-weight: 500;
     margin-top: 1.4em;
+    letter-spacing: -0.015em;
   }
   .article-body blockquote {
     border-left: 2px solid var(--color-fg-faint);
@@ -184,7 +218,7 @@
     color: var(--color-bg);
     border-radius: 6px;
     padding: 2px;
-    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.25);
+    box-shadow: 0 4px 14px rgba(15, 26, 20, 0.25);
     animation: tip-in 120ms ease-out;
   }
   .highlight-tip::after {
@@ -276,15 +310,15 @@
 
   /* System theme preview split gradients */
   .preview-split-bg {
-    background: linear-gradient(135deg, #f8fafc 0%, #f8fafc 49%, #0f1419 51%, #0f1419 100%);
+    background: linear-gradient(135deg, #fafbfc 0%, #fafbfc 49%, #0f1419 51%, #0f1419 100%);
   }
   .preview-split-text {
-    background: linear-gradient(135deg, #0f172a 0%, #0f172a 49%, #e6edf3 51%, #e6edf3 100%);
+    background: linear-gradient(135deg, #0f1a14 0%, #0f1a14 49%, #eaedf2 51%, #eaedf2 100%);
   }
   .preview-split-accent {
-    background: linear-gradient(135deg, #2d5a94 0%, #2d5a94 49%, #5b9cee 51%, #5b9cee 100%);
+    background: linear-gradient(135deg, #1e3a5f 0%, #1e3a5f 49%, #5b9cee 51%, #5b9cee 100%);
   }
   .preview-split-rail {
-    background: linear-gradient(135deg, #94a3b8 0%, #94a3b8 49%, #475569 51%, #475569 100%);
+    background: linear-gradient(135deg, #1e3a5f 0%, #1e3a5f 49%, #1a2740 51%, #1a2740 100%);
   }
 }

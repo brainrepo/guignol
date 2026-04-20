@@ -124,6 +124,7 @@ export default function App(): JSX.Element {
       style={{ gridTemplateColumns }}
     >
       <div
+        data-surface="accent"
         className="rail flex flex-col items-center pt-8 pb-6"
         style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}
       >
@@ -135,7 +136,7 @@ export default function App(): JSX.Element {
           onClick={() => setAddFeedOpen(true)}
           aria-label={t('app.addFeed')}
           title={t('app.addFeedTooltip')}
-          className="mt-2 w-9 h-9 flex items-center justify-center rounded-full bg-accent text-bg hover:bg-accent-dim transition-colors"
+          className="mt-2 w-9 h-9 flex items-center justify-center rounded-full bg-white/15 text-white hover:bg-white/25 transition-colors"
           style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
         >
           <Plus size={18} strokeWidth={2.25} aria-hidden />
@@ -143,7 +144,8 @@ export default function App(): JSX.Element {
       </div>
 
       <aside
-        className={`relative bg-bg-panel pt-8 pb-5 overflow-x-hidden overflow-y-auto ${sidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none overflow-hidden'} transition-opacity duration-150`}
+        data-surface="accent"
+        className={`relative pt-8 pb-5 overflow-x-hidden overflow-y-auto ${sidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none overflow-hidden'} transition-opacity duration-150`}
       >
         <FeedList
           feeds={feeds}
